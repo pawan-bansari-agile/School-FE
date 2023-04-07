@@ -15,7 +15,7 @@ export class AuthenticateSuccess implements Action {
     public payload: {
       data: {
         access_token: string;
-        existingUser: {
+        user: {
           userName: string;
           email: string;
           role: string;

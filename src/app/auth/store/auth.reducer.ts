@@ -21,14 +21,14 @@ export function authReducer(
     case AuthActions.AUTHENTICATE_SUCCESS:
       const user = new User(
         action.payload.data.access_token,
-        action.payload.data.existingUser.userName,
-        action.payload.data.existingUser.email,
-        action.payload.data.existingUser.role,
-        action.payload.data.existingUser.forgetPwdToken,
-        action.payload.data.existingUser.forgetPwdExpires,
-        action.payload.data.existingUser.deleted,
-        action.payload.data.existingUser._id,
-        action.payload.data.existingUser.__v,
+        action.payload.data.user.userName,
+        action.payload.data.user.email,
+        action.payload.data.user.role,
+        action.payload.data.user.forgetPwdToken,
+        action.payload.data.user.forgetPwdExpires,
+        action.payload.data.user.deleted,
+        action.payload.data.user._id,
+        action.payload.data.user.__v,
         action.payload.message
       );
       return {

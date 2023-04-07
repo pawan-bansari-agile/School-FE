@@ -13,7 +13,7 @@ import { AuthService } from "../auth.service";
 export interface AuthResponseData {
   data: {
     access_token: string;
-    existingUser: {
+    user: {
       userName: string;
       email: string;
       role: string;
@@ -31,7 +31,7 @@ export interface AuthResponseData {
 const handleAuthentication = (
   data: {
     access_token: string;
-    existingUser: {
+    user: {
       userName: string;
       email: string;
       role: string;
@@ -49,18 +49,18 @@ const handleAuthentication = (
   const expirationDate = new Date(new Date().getTime() + 600 * 1000);
   const user = new User(
     data.access_token,
-    data.existingUser.userName,
-    data.existingUser.email,
-    data.existingUser.role,
-    data.existingUser.forgetPwdToken,
-    data.existingUser.forgetPwdExpires,
-    data.existingUser.deleted,
-    data.existingUser._id,
-    data.existingUser.__v,
+    data.user.userName,
+    data.user.email,
+    data.user.role,
+    data.user.forgetPwdToken,
+    data.user.forgetPwdExpires,
+    data.user.deleted,
+    data.user._id,
+    data.user.__v,
     message,
     expirationDate
   );
-  console.log("user from auth handle function", user);
+  // console.log("user from auth handle function", user);
 
   localStorage.setItem("userData", JSON.stringify(user));
   // console.log("check 1");
@@ -68,15 +68,15 @@ const handleAuthentication = (
   const payload = {
     data: {
       access_token: data.access_token,
-      existingUser: {
-        userName: data.existingUser.userName,
-        email: data.existingUser.email,
-        role: data.existingUser.role,
-        forgetPwdToken: data.existingUser.forgetPwdToken,
-        forgetPwdExpires: data.existingUser.forgetPwdExpires,
-        deleted: data.existingUser.deleted,
-        _id: data.existingUser._id,
-        __v: data.existingUser.__v,
+      user: {
+        userName: data.user.userName,
+        email: data.user.email,
+        role: data.user.role,
+        forgetPwdToken: data.user.forgetPwdToken,
+        forgetPwdExpires: data.user.forgetPwdExpires,
+        deleted: data.user.deleted,
+        _id: data.user._id,
+        __v: data.user.__v,
       },
     },
     message: message,
@@ -115,7 +115,7 @@ export class AuthEffects {
   authSignup = this.actions$.pipe(
     ofType(AuthActions.SIGNUP_START),
     switchMap((signupAction: AuthActions.SignupStart) => {
-      console.log("signupAction.payload.userName", signupAction.payload);
+      // console.log("signupAction.payload.userName", signupAction.payload);
 
       return this.http
         .post<AuthResponseData>(
@@ -130,25 +130,27 @@ export class AuthEffects {
         )
         .pipe(
           tap((resData) => {
-            console.log("resData", resData);
+            // console.log("resData", resData);
 
             this.authService.setLogoutTimer(600 * 1000);
           }),
           map((resData) => {
+            // console.log("check1", resData.data);
+
             const data = {
               access_token: resData.data.access_token,
-              existingUser: {
-                userName: resData.data.existingUser.userName,
-                email: resData.data.existingUser.email,
-                role: resData.data.existingUser.role,
-                forgetPwdToken: resData.data.existingUser.forgetPwdToken,
-                forgetPwdExpires: resData.data.existingUser.forgetPwdExpires,
-                deleted: resData.data.existingUser.deleted,
-                _id: resData.data.existingUser._id,
-                __v: resData.data.existingUser.__v,
+              user: {
+                userName: resData.data.user.userName,
+                email: resData.data.user.email,
+                role: resData.data.user.role,
+                forgetPwdToken: resData.data.user.forgetPwdToken,
+                forgetPwdExpires: resData.data.user.forgetPwdExpires,
+                deleted: resData.data.user.deleted,
+                _id: resData.data.user._id,
+                __v: resData.data.user.__v,
               },
             };
-            console.log("inside map", data);
+            // console.log("inside map", data);
 
             return handleAuthentication(
               data,
@@ -158,6 +160,8 @@ export class AuthEffects {
             );
           }),
           catchError((errorRes) => {
+            // console.log("errorRes", errorRes);
+
             return handleError(errorRes);
           })
         );
@@ -189,15 +193,15 @@ export class AuthEffects {
 
             const data = {
               access_token: resData.data.access_token,
-              existingUser: {
-                userName: resData.data.existingUser.userName,
-                email: resData.data.existingUser.email,
-                role: resData.data.existingUser.role,
-                forgetPwdToken: resData.data.existingUser.forgetPwdToken,
-                forgetPwdExpires: resData.data.existingUser.forgetPwdExpires,
-                deleted: resData.data.existingUser.deleted,
-                _id: resData.data.existingUser._id,
-                __v: resData.data.existingUser.__v,
+              user: {
+                userName: resData.data.user.userName,
+                email: resData.data.user.email,
+                role: resData.data.user.role,
+                forgetPwdToken: resData.data.user.forgetPwdToken,
+                forgetPwdExpires: resData.data.user.forgetPwdExpires,
+                deleted: resData.data.user.deleted,
+                _id: resData.data.user._id,
+                __v: resData.data.user.__v,
               },
             };
             // console.log("from map", data);
@@ -258,7 +262,7 @@ export class AuthEffects {
         return new AuthActions.AuthenticateSuccess({
           data: {
             access_token: loadedUser.access_token,
-            existingUser: {
+            user: {
               userName: loadedUser.userName,
               email: loadedUser.email,
               role: loadedUser.role,
