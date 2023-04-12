@@ -1,12 +1,12 @@
 import { Action } from "@ngrx/store";
 
-export const LOGIN_START = "[Auth] Login Start";
-export const AUTHENTICATE_SUCCESS = "[Auth] Login";
-export const AUTHENTICATE_FAIL = "[Auth] Login Fail";
-export const SIGNUP_START = "[Auth] Signup Start";
-export const CLEAR_ERROR = "[Auth] Clear Error";
-export const AUTO_LOGIN = "[Auth] Auto Login";
-export const LOGOUT = "[Auth] Logout";
+export const LOGIN_START = "[SchoolAuth] Login Start";
+export const AUTHENTICATE_SUCCESS = "[SchoolAuth] Login";
+export const AUTHENTICATE_FAIL = "[SchoolAuth] Login Fail";
+export const SIGNUP_START = "[SchoolAuth] Signup Start";
+export const CLEAR_ERROR = "[SchoolAuth] Clear Error";
+export const AUTO_LOGIN = "[SchoolAuth] Auto Login";
+export const LOGOUT = "[SchoolAuth] Logout";
 
 export class AuthenticateSuccess implements Action {
   readonly type = AUTHENTICATE_SUCCESS;
@@ -16,8 +16,14 @@ export class AuthenticateSuccess implements Action {
       data: {
         access_token: string;
         user: {
-          userName: string;
+          name: string;
           email: string;
+          address: string;
+          photo: string;
+          zipCode: number;
+          city: string;
+          state: string;
+          country: string;
           role: string;
           forgetPwdToken: string;
           forgetPwdExpires: Date;
@@ -53,7 +59,16 @@ export class SignupStart implements Action {
   readonly type = SIGNUP_START;
 
   constructor(
-    public payload: { userName: string; email: string; role: string }
+    public payload: {
+      name: string;
+      email: string;
+      address: string;
+      photo: string;
+      zipCode: number;
+      city: string;
+      state: string;
+      country: string;
+    }
   ) {}
 }
 

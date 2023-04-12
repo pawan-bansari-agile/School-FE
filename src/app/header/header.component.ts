@@ -12,8 +12,9 @@ import * as RecipeActions from "../recipes/store/recipe.actions";
   templateUrl: "./header.component.html",
 })
 export class HeaderComponent implements OnInit, OnDestroy {
-  isAuthenticated = false;
+  isAuthenticated = "";
   private userSub: Subscription;
+  private schoolSub: Subscription;
 
   constructor(private store: Store<fromApp.AppState>) {}
 
@@ -22,9 +23,16 @@ export class HeaderComponent implements OnInit, OnDestroy {
       .select("auth")
       .pipe(map((authState) => authState.user))
       .subscribe((user) => {
-        this.isAuthenticated = !!user;
+        this.isAuthenticated = user ? user.role : "";
         // console.log(!user);
         // console.log(!!user);
+      });
+
+    this.schoolSub = this.store
+      .select("schoolAuth")
+      .pipe(map((authState) => authState.user))
+      .subscribe((user) => {
+        this.isAuthenticated = user ? user.role : "";
       });
   }
 
@@ -44,5 +52,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.userSub.unsubscribe();
+    this.schoolSub.unsubscribe();
   }
 }

@@ -1,24 +1,23 @@
 import {
   Component,
   ComponentFactoryResolver,
-  ViewChild,
-  OnDestroy,
   OnInit,
+  ViewChild,
 } from "@angular/core";
 import { NgForm } from "@angular/forms";
-import { Subscription } from "rxjs";
 import { Store } from "@ngrx/store";
-
-import { AlertComponent } from "../shared/alert/alert.component";
-import { PlaceholderDirective } from "../shared/placeholder/placeholder.directive";
-import * as fromApp from "../store/app.reducer";
-import * as AuthActions from "./store/auth.actions";
+import { Subscription, zip } from "rxjs";
+import { AlertComponent } from "src/app/shared/alert/alert.component";
+import { PlaceholderDirective } from "src/app/shared/placeholder/placeholder.directive";
+import * as fromApp from "../../store/app.reducer";
+import * as AuthActions from "./store/schoolAuth.actions";
 
 @Component({
-  selector: "app-auth",
-  templateUrl: "./auth.component.html",
+  selector: "app-school-auth",
+  templateUrl: "./school-auth.component.html",
+  styleUrls: ["./school-auth.component.css"],
 })
-export class AuthComponent implements OnInit, OnDestroy {
+export class SchoolAuthComponent implements OnInit {
   isLoginMode = true;
   isLoading = false;
   error: string = null;
@@ -34,7 +33,7 @@ export class AuthComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    this.storeSub = this.store.select("auth").subscribe((authState) => {
+    this.storeSub = this.store.select("schoolAuth").subscribe((authState) => {
       this.isLoading = authState.loading;
       this.error = authState.authError;
       if (this.error) {
@@ -53,8 +52,13 @@ export class AuthComponent implements OnInit, OnDestroy {
     }
     const email = form.value.email;
     const password = form.value.password;
-    const userName = form.value.userName;
-    const role = form.value.role;
+    const name = form.value.name;
+    const address = form.value.address;
+    const photo = form.value.photo;
+    const zipCode = form.value.zipCode;
+    const city = form.value.city;
+    const state = form.value.state;
+    const country = form.value.country;
 
     if (this.isLoginMode) {
       // authObs = this.authService.login(email, password);
@@ -64,9 +68,14 @@ export class AuthComponent implements OnInit, OnDestroy {
     } else {
       this.store.dispatch(
         new AuthActions.SignupStart({
-          userName: userName,
+          name: name,
           email: email,
-          role: role ? role : "Reader",
+          address: address,
+          photo: photo ? photo : "",
+          zipCode: zipCode,
+          city: city,
+          state: state,
+          country: country,
         })
       );
     }

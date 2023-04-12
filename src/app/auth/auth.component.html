@@ -48,6 +48,16 @@
           minlength="6"
         />
       </div>
+      <div *ngIf="!isLoginMode" class="form-group">
+        <label for="role">Role</label>
+        <input
+          type="text"
+          id="role"
+          class="form-control"
+          ngModel
+          name="role"
+        />
+      </div>
       <div>
         <button
           class="btn btn-primary"
