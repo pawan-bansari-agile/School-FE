@@ -12,10 +12,10 @@ const appRoutes: Routes = [
     path: "auth",
     loadChildren: "./auth/auth.module#AuthModule",
   },
-  {
-    path: "schoolAuth",
-    loadChildren: "./school-auth/school-auth.module#SchoolAuth",
-  },
+  // {
+  //   path: "schoolAuth",
+  //   loadChildren: "./school-auth/school-auth.module#SchoolAuth",
+  // },
 ];
 
 @NgModule({

@@ -18,22 +18,58 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   constructor(private store: Store<fromApp.AppState>) {}
 
-  ngOnInit() {
-    this.userSub = this.store
-      .select("auth")
-      .pipe(map((authState) => authState.user))
-      .subscribe((user) => {
-        this.isAuthenticated = user ? user.role : "";
-        // console.log(!user);
-        // console.log(!!user);
-      });
+  // ngOnInit() {
+  //   this.userSub = this.store
+  //     .select("auth")
+  //     .pipe(map((authState) => authState.user))
+  //     .subscribe((user) => {
+  //       this.isAuthenticated = user ? user.role : "";
+  //       // console.log(!user);
+  //       // console.log(!!user);
+  //     });
 
-    this.schoolSub = this.store
-      .select("schoolAuth")
-      .pipe(map((authState) => authState.user))
-      .subscribe((user) => {
-        this.isAuthenticated = user ? user.role : "";
-      });
+  //   // this.schoolSub = this.store
+  //   //   .select("auth")
+  //   //   .pipe(map((authState) => authState.school))
+  //   //   .subscribe((school) => {
+  //   //     this.isAuthenticated = school ? school.role : "";
+  //   //   });
+  // }
+  // ngOnInit() {
+  //   this.userSub = this.store
+  //     .select("auth")
+  //     .pipe(
+  //       map((authState) => {
+  //         return {
+  //           user: authState.user,
+  //           school: authState.school,
+  //         };
+  //       })
+  //     )
+  //     .subscribe(({ user, school }) => {
+  //       console.log("inside header", user);
+
+  //       this.isAuthenticated = user ? user.role : "";
+  //       // this.isAuthenticated = school ? school.role : "";
+  //     });
+  // }
+  // ngOnInit() {
+  //   this.userSub = this.store.select("auth").subscribe((authState) => {
+  //     console.log(authState.school);
+  //     this.isAuthenticated = authState.user ? authState.user.role : "";
+  //     // this.isAuthenticated = authState.school ? authState.school.role : "";
+  //     console.log("check 3", this.isAuthenticated);
+  //   });
+  // }
+  ngOnInit() {
+    this.userSub = this.store.select("auth").subscribe((authState) => {
+      console.log(authState.school);
+      this.isAuthenticated = authState.user ? authState.user.role : "";
+      if (authState.school) {
+        this.isAuthenticated = authState.school.role;
+      }
+      console.log("check 3", this.isAuthenticated);
+    });
   }
 
   onSaveData() {
@@ -47,7 +83,11 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   onLogout() {
-    this.store.dispatch(new AuthActions.Logout());
+    if (this.isAuthenticated === "Admin") {
+      this.store.dispatch(new AuthActions.Logout());
+    } else {
+      this.store.dispatch(new AuthActions.SchoolLogout());
+    }
   }
 
   ngOnDestroy() {

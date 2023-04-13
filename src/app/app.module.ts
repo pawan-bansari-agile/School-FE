@@ -15,7 +15,7 @@ import * as fromApp from "./store/app.reducer";
 import { AuthEffects } from "./auth/store/auth.effects";
 import { environment } from "../environments/environment";
 import { RecipeEffects } from "./recipes/store/recipe.effects";
-import { SchoolAuthEffects } from "./school-auth/school-auth/store/schoolAuth.effects";
+// import { SchoolAuthEffects } from "./school-auth/school-auth/store/schoolAuth.effects";
 
 @NgModule({
   declarations: [AppComponent, HeaderComponent],
@@ -24,7 +24,7 @@ import { SchoolAuthEffects } from "./school-auth/school-auth/store/schoolAuth.ef
     HttpClientModule,
     AppRoutingModule,
     StoreModule.forRoot(fromApp.appReducer),
-    EffectsModule.forRoot([AuthEffects, RecipeEffects, SchoolAuthEffects]),
+    EffectsModule.forRoot([AuthEffects, RecipeEffects]),
     StoreDevtoolsModule.instrument({ logOnly: environment.production }),
     StoreRouterConnectingModule.forRoot(),
     SharedModule,

@@ -19,7 +19,7 @@ import * as AuthActions from "./store/auth.actions";
   templateUrl: "./auth.component.html",
 })
 export class AuthComponent implements OnInit, OnDestroy {
-  isLoginMode = true;
+  isLoginMode = "Login as User";
   isLoading = false;
   error: string = null;
   @ViewChild(PlaceholderDirective, { static: false })
@@ -43,32 +43,55 @@ export class AuthComponent implements OnInit, OnDestroy {
     });
   }
 
-  onSwitchMode() {
-    this.isLoginMode = !this.isLoginMode;
+  onSwitchMode(feature: string) {
+    this.isLoginMode = `SignUp as ${feature}`;
+  }
+
+  onLoginMode(feature: string) {
+    this.isLoginMode = `Login as ${feature}`;
   }
 
   onSubmit(form: NgForm) {
     if (!form.valid) {
       return;
     }
+    const name = form.value.name;
+    const address = form.value.address;
+    const photo = form.value.photo;
+    const zipCode = form.value.zipCode;
+    const city = form.value.city;
+    const state = form.value.state;
+    const country = form.value.country;
+    const userName = form.value.userName;
     const email = form.value.email;
     const password = form.value.password;
-    const userName = form.value.userName;
     const role = form.value.role;
 
-    if (this.isLoginMode) {
-      // authObs = this.authService.login(email, password);
-      this.store.dispatch(
-        new AuthActions.LoginStart({ email: email, password: password })
-      );
-    } else {
-      this.store.dispatch(
-        new AuthActions.SignupStart({
-          userName: userName,
-          email: email,
-          role: role ? role : "Reader",
-        })
-      );
+    // if (this.isLoginMode === "Login as User") {
+    //   // authObs = this.authService.login(email, password);
+    //   this.store.dispatch(
+    //     new AuthActions.LoginStart({ email: email, password: password })
+    //   );
+    // } else {
+    //   this.store.dispatch(
+    //     new AuthActions.SignupStart({
+    //       userName: userName,
+    //       email: email,
+    //       role: role ? role : "Reader",
+    //     })
+    //   );
+    // }
+    switch (this.isLoginMode) {
+      case "Login as User":
+        this.store.dispatch(
+          new AuthActions.LoginStart({ email: email, password: password })
+        );
+        break;
+      case "Login as School":
+        this.store.dispatch(
+          new AuthActions.SchoolLoginStart({ email: email, password: password })
+        );
+        break;
     }
 
     form.reset();
