@@ -499,7 +499,9 @@ export class AuthEffects {
     ofType(AuthActions.AUTO_LOGIN),
     map(() => {
       const userData = JSON.parse(localStorage.getItem("userData"));
-      // console.log("userData from local storage", userData);
+      const schoolData = JSON.parse(localStorage.getItem("schoolData"));
+      console.log("inside autologin user", userData);
+      console.log("inside autologin school", schoolData);
 
       if (!userData) {
         return { type: "DUMMY" };
@@ -559,7 +561,7 @@ export class AuthEffects {
     ofType(AuthActions.SCHOOL_AUTO_LOGIN),
     map(() => {
       const userData = JSON.parse(localStorage.getItem("schoolData"));
-      // console.log("userData from local storage", userData);
+      console.log("inside school suto login", userData);
 
       if (!userData) {
         return { type: "DUMMY" };
