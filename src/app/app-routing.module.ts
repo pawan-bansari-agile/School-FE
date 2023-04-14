@@ -2,7 +2,7 @@ import { NgModule } from "@angular/core";
 import { Routes, RouterModule, PreloadAllModules } from "@angular/router";
 
 const appRoutes: Routes = [
-  { path: "", redirectTo: "/recipes", pathMatch: "full" },
+  { path: "", redirectTo: "/schools", pathMatch: "full" },
   { path: "recipes", loadChildren: "./recipes/recipes.module#RecipesModule" },
   {
     path: "shopping-list",
@@ -16,10 +16,10 @@ const appRoutes: Routes = [
     path: "dashboard",
     loadChildren: "./dashboard/dashboard.module#DashboardModule",
   },
-  // {
-  //   path: "schools",
-  //   loadChildren: "./schools/schools.module#SchoolsModule",
-  // },
+  {
+    path: "schools",
+    loadChildren: "./schools/schools.module#SchoolsModule",
+  },
 ];
 
 @NgModule({
