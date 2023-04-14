@@ -44,6 +44,11 @@ export function schoolReducer(
           return school._id !== action.payload;
         }),
       };
+    case SchoolActions.FIND_ONE_SCHOOL:
+      return {
+        ...state,
+        schools:
+      }
     default:
       return state;
   }

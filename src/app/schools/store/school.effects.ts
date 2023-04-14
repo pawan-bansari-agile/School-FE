@@ -65,6 +65,30 @@ export class SchoolEffects {
     })
   );
 
+  @Effect()
+  findOneSchool = this.actions$.pipe(
+    ofType(SchoolActions.FIND_ONE_SCHOOL),
+    switchMap((updateAction: SchoolActions.UpdateSchool) => {
+      return this.http.patch<School>("http://localhost:3000/school/update", {
+        name: updateAction.payload.newSchool.name,
+        email: updateAction.payload.newSchool.email,
+        address: updateAction.payload.newSchool.address,
+        photo: updateAction.payload.newSchool.photo,
+        zipCode: updateAction.payload.newSchool.zipCode,
+        city: updateAction.payload.newSchool.city,
+        state: updateAction.payload.newSchool.state,
+        country: updateAction.payload.newSchool.country,
+      });
+    }),
+    map((school) => {
+      const payload = {
+        index: school._id,
+        newSchool: school,
+      };
+      return new SchoolActions.UpdateSchool(payload);
+    })
+  );
+
   constructor(
     private actions$: Actions,
     private http: HttpClient,
