@@ -474,7 +474,7 @@ export class AuthEffects {
     ofType(AuthActions.AUTHENTICATE_SUCCESS),
     tap((authSuccessAction: AuthActions.AuthenticateSuccess) => {
       if (authSuccessAction.payload.redirect) {
-        this.router.navigate(["/recipes"]);
+        this.router.navigate(["/dashboard"]);
       }
     })
   );
@@ -488,11 +488,145 @@ export class AuthEffects {
 
         console.log("before");
 
-        this.router.navigate(["/"]);
+        this.router.navigate(["/schools"]);
         console.log("after");
       }
     })
   );
+
+  // @Effect()
+  // autoLogin = this.actions$.pipe(
+  //   ofType(AuthActions.AUTO_LOGIN),
+  //   map(() => {
+  //     const userData = JSON.parse(localStorage.getItem("userData"));
+  //     const schoolData = JSON.parse(localStorage.getItem("schoolData"));
+  //     console.log("inside autologin user", userData);
+  //     console.log("inside autologin school", schoolData);
+
+  //     if (!userData) {
+  //       return { type: "DUMMY" };
+  //     }
+
+  //     const loadedUser = new User(
+  //       userData.access_token,
+  //       userData.userName,
+  //       userData.email,
+  //       userData.role,
+  //       userData.forgetPwdToken,
+  //       userData.forgetPwdExpires,
+  //       userData.deleted,
+  //       userData._id,
+  //       userData.__v,
+  //       userData.message,
+  //       new Date(userData.expirationDate)
+  //       // new Date(userData._tokenExpirationDate)
+  //     );
+  //     // console.log("loadedUser", loadedUser);
+
+  //     if (loadedUser.access_token) {
+  //       // this.user.next(loadedUser);
+  //       const expirationDuration =
+  //         new Date(userData.expirationDate).getTime() - new Date().getTime();
+  //       this.authService.setLogoutTimer(expirationDuration);
+  //       return new AuthActions.AuthenticateSuccess({
+  //         data: {
+  //           access_token: loadedUser.access_token,
+  //           user: {
+  //             userName: loadedUser.userName,
+  //             email: loadedUser.email,
+  //             role: loadedUser.role,
+  //             forgetPwdToken: loadedUser.forgetPwdToken,
+  //             forgetPwdExpires: loadedUser.forgetPwdExpires,
+  //             deleted: loadedUser.deleted,
+  //             _id: loadedUser._id,
+  //             __v: loadedUser.__v,
+  //           },
+  //         },
+  //         message: loadedUser.message,
+  //         expirationDate: new Date(userData.expirationDate),
+  //         redirect: false,
+  //       });
+
+  //       // const expirationDuration =
+  //       //   new Date(userData._tokenExpirationDate).getTime() -
+  //       //   new Date().getTime();
+  //       // this.autoLogout(expirationDuration);
+  //     }
+  //     return { type: "DUMMY" };
+  //   })
+  // );
+
+  // @Effect()
+  // schoolAutoLogin = this.actions$.pipe(
+  //   ofType(AuthActions.SCHOOL_AUTO_LOGIN),
+  //   map(() => {
+  //     const userData = JSON.parse(localStorage.getItem("schoolData"));
+  //     console.log("inside school suto login", userData);
+
+  //     if (!userData) {
+  //       return { type: "DUMMY" };
+  //     }
+
+  //     const loadedUser = new School(
+  //       userData.access_token,
+  //       userData.name,
+  //       userData.email,
+  //       userData.address,
+  //       userData.photo,
+  //       userData.zipCode,
+  //       userData.city,
+  //       userData.state,
+  //       userData.country,
+  //       userData.role,
+  //       userData.forgetPwdToken,
+  //       userData.forgetPwdExpires,
+  //       userData.deleted,
+  //       userData._id,
+  //       userData.__v,
+  //       userData.message,
+  //       new Date(userData.expirationDate)
+  //       // new Date(userData._tokenExpirationDate)
+  //     );
+  //     // console.log("loadedUser", loadedUser);
+
+  //     if (loadedUser.access_token) {
+  //       // this.user.next(loadedUser);
+  //       const expirationDuration =
+  //         new Date(userData.expirationDate).getTime() - new Date().getTime();
+  //       this.authService.setLogoutTimer(expirationDuration);
+  //       return new AuthActions.SchoolAuthenticateSuccess({
+  //         data: {
+  //           access_token: loadedUser.access_token,
+  //           user: {
+  //             name: loadedUser.name,
+  //             email: loadedUser.email,
+  //             address: loadedUser.address,
+  //             photo: loadedUser.photo,
+  //             zipCode: loadedUser.zipCode,
+  //             city: loadedUser.city,
+  //             state: loadedUser.state,
+  //             country: loadedUser.country,
+  //             role: loadedUser.role,
+  //             forgetPwdToken: loadedUser.forgetPwdToken,
+  //             forgetPwdExpires: loadedUser.forgetPwdExpires,
+  //             deleted: loadedUser.deleted,
+  //             _id: loadedUser._id,
+  //             __v: loadedUser.__v,
+  //           },
+  //         },
+  //         message: loadedUser.message,
+  //         expirationDate: new Date(userData.expirationDate),
+  //         redirect: false,
+  //       });
+
+  //       // const expirationDuration =
+  //       //   new Date(userData._tokenExpirationDate).getTime() -
+  //       //   new Date().getTime();
+  //       // this.autoLogout(expirationDuration);
+  //     }
+  //     return { type: "DUMMY" };
+  //   })
+  // );
 
   @Effect()
   autoLogin = this.actions$.pipe(
@@ -503,28 +637,25 @@ export class AuthEffects {
       console.log("inside autologin user", userData);
       console.log("inside autologin school", schoolData);
 
-      if (!userData) {
+      if (!userData && !schoolData) {
         return { type: "DUMMY" };
       }
 
-      const loadedUser = new User(
-        userData.access_token,
-        userData.userName,
-        userData.email,
-        userData.role,
-        userData.forgetPwdToken,
-        userData.forgetPwdExpires,
-        userData.deleted,
-        userData._id,
-        userData.__v,
-        userData.message,
-        new Date(userData.expirationDate)
-        // new Date(userData._tokenExpirationDate)
-      );
-      // console.log("loadedUser", loadedUser);
-
-      if (loadedUser.access_token) {
-        // this.user.next(loadedUser);
+      if (userData) {
+        const loadedUser = new User(
+          userData.access_token,
+          userData.userName,
+          userData.email,
+          userData.role,
+          userData.forgetPwdToken,
+          userData.forgetPwdExpires,
+          userData.deleted,
+          userData._id,
+          userData.__v,
+          userData.message,
+          new Date(userData.expirationDate)
+          // new Date(userData._tokenExpirationDate)
+        );
         const expirationDuration =
           new Date(userData.expirationDate).getTime() - new Date().getTime();
         this.authService.setLogoutTimer(expirationDuration);
@@ -546,83 +677,65 @@ export class AuthEffects {
           expirationDate: new Date(userData.expirationDate),
           redirect: false,
         });
-
-        // const expirationDuration =
-        //   new Date(userData._tokenExpirationDate).getTime() -
-        //   new Date().getTime();
-        // this.autoLogout(expirationDuration);
       }
-      return { type: "DUMMY" };
-    })
-  );
-
-  @Effect()
-  schoolAutoLogin = this.actions$.pipe(
-    ofType(AuthActions.SCHOOL_AUTO_LOGIN),
-    map(() => {
-      const userData = JSON.parse(localStorage.getItem("schoolData"));
-      console.log("inside school suto login", userData);
-
-      if (!userData) {
-        return { type: "DUMMY" };
-      }
-
-      const loadedUser = new School(
-        userData.access_token,
-        userData.name,
-        userData.email,
-        userData.address,
-        userData.photo,
-        userData.zipCode,
-        userData.city,
-        userData.state,
-        userData.country,
-        userData.role,
-        userData.forgetPwdToken,
-        userData.forgetPwdExpires,
-        userData.deleted,
-        userData._id,
-        userData.__v,
-        userData.message,
-        new Date(userData.expirationDate)
-        // new Date(userData._tokenExpirationDate)
-      );
       // console.log("loadedUser", loadedUser);
 
-      if (loadedUser.access_token) {
-        // this.user.next(loadedUser);
+      // if (loadedUser.access_token) {
+      // this.user.next(loadedUser);
+
+      // const expirationDuration =
+      //   new Date(userData._tokenExpirationDate).getTime() -
+      //   new Date().getTime();
+      // this.autoLogout(expirationDuration);
+      // }
+      if (schoolData) {
+        const loadedSchool = new School(
+          schoolData.access_token,
+          schoolData.name,
+          schoolData.email,
+          schoolData.address,
+          schoolData.photo,
+          schoolData.zipCode,
+          schoolData.city,
+          schoolData.state,
+          schoolData.country,
+          schoolData.role,
+          schoolData.forgetPwdToken,
+          schoolData.forgetPwdExpires,
+          schoolData.deleted,
+          schoolData._id,
+          schoolData.__v,
+          schoolData.message,
+          new Date(schoolData.expirationDate)
+          // new Date(userData._tokenExpirationDate)
+        );
         const expirationDuration =
-          new Date(userData.expirationDate).getTime() - new Date().getTime();
+          new Date(schoolData.expirationDate).getTime() - new Date().getTime();
         this.authService.setLogoutTimer(expirationDuration);
         return new AuthActions.SchoolAuthenticateSuccess({
           data: {
-            access_token: loadedUser.access_token,
+            access_token: loadedSchool.access_token,
             user: {
-              name: loadedUser.name,
-              email: loadedUser.email,
-              address: loadedUser.address,
-              photo: loadedUser.photo,
-              zipCode: loadedUser.zipCode,
-              city: loadedUser.city,
-              state: loadedUser.state,
-              country: loadedUser.country,
-              role: loadedUser.role,
-              forgetPwdToken: loadedUser.forgetPwdToken,
-              forgetPwdExpires: loadedUser.forgetPwdExpires,
-              deleted: loadedUser.deleted,
-              _id: loadedUser._id,
-              __v: loadedUser.__v,
+              name: loadedSchool.name,
+              email: loadedSchool.email,
+              address: loadedSchool.address,
+              photo: loadedSchool.photo,
+              zipCode: loadedSchool.zipCode,
+              city: loadedSchool.city,
+              state: loadedSchool.state,
+              country: loadedSchool.country,
+              role: loadedSchool.role,
+              forgetPwdToken: loadedSchool.forgetPwdToken,
+              forgetPwdExpires: loadedSchool.forgetPwdExpires,
+              deleted: loadedSchool.deleted,
+              _id: loadedSchool._id,
+              __v: loadedSchool.__v,
             },
           },
-          message: loadedUser.message,
-          expirationDate: new Date(userData.expirationDate),
+          message: loadedSchool.message,
+          expirationDate: new Date(schoolData.expirationDate),
           redirect: false,
         });
-
-        // const expirationDuration =
-        //   new Date(userData._tokenExpirationDate).getTime() -
-        //   new Date().getTime();
-        // this.autoLogout(expirationDuration);
       }
       return { type: "DUMMY" };
     })

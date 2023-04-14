@@ -7,6 +7,7 @@ export interface State {
   school: School;
   authError: string;
   loading: boolean;
+  schools: School[];
 }
 
 const initialState: State = {
@@ -14,6 +15,7 @@ const initialState: State = {
   school: null,
   authError: null,
   loading: false,
+  schools: null,
 };
 
 export function authReducer(

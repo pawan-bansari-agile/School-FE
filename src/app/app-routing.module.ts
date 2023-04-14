@@ -12,9 +12,13 @@ const appRoutes: Routes = [
     path: "auth",
     loadChildren: "./auth/auth.module#AuthModule",
   },
+  {
+    path: "dashboard",
+    loadChildren: "./dashboard/dashboard.module#DashboardModule",
+  },
   // {
-  //   path: "schoolAuth",
-  //   loadChildren: "./school-auth/school-auth.module#SchoolAuth",
+  //   path: "schools",
+  //   loadChildren: "./schools/schools.module#SchoolsModule",
   // },
 ];
 

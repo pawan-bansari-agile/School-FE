@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Student Dashboard</title>
+  <style>
+    /* Basic CSS styles */
+    body {
+      font-family: Arial, sans-serif;
+    }
+    h1 {
+      text-align: center;
+    }
+    .container {
+      margin: 0 auto;
+      max-width: 600px;
+      padding: 20px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    form {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    label {
+      margin-right: 10px;
+    }
+    input[type="text"] {
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Student Dashboard</h1>
+    <form #dashboardForm="ngForm" (ngSubmit)="onSubmit(dashboardForm)">
+      <label for="standard">Standard:</label>
+      <input
+      type="text"
+      id="standard"
+      class="form-control"
+      name="standard"
+      ngModel
+      >
+
+      <label for="school">School:</label>
+      <input
+      type="text"
+      id="school"
+      class="form-control"
+      name="school"
+      ngModel
+      >
+
+      <button type="submit">Filter</button>
+    </form>
+
+    <div>
+      Count: {{count | async}}
+    </div>
+  </div>
