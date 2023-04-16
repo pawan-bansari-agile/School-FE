@@ -1,14 +1,15 @@
-import { Injectable } from "@angular/core";
-import { Router } from "@angular/router";
-import { Actions, ofType, Effect } from "@ngrx/effects";
-import { switchMap, catchError, map, tap } from "rxjs/operators";
-import { of } from "rxjs";
-import { HttpClient } from "@angular/common/http";
+import { Injectable } from '@angular/core';
+import { Router } from '@angular/router';
+import { Actions, ofType, Effect } from '@ngrx/effects';
+import { switchMap, catchError, map, tap } from 'rxjs/operators';
+import { of } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
 
-import * as AuthActions from "./auth.actions";
-import { User } from "../user.model";
-import { AuthService } from "../auth.service";
-import { School } from "src/app/auth/school.model";
+import * as AuthActions from './auth.actions';
+import { User } from '../user.model';
+import { AuthService } from '../auth.service';
+import { School } from 'src/app/auth/school.model';
+import * as SchoolActions from '../../schools/store/school.actions';
 
 export interface AuthResponseData {
   data: {
@@ -66,7 +67,7 @@ const handleAuthentication = (
       __v: number;
     };
   },
-  message: string
+  message: string,
 ) => {
   // console.log("data from handle auth function", data.access_token);
 
@@ -82,11 +83,11 @@ const handleAuthentication = (
     data.user._id,
     data.user.__v,
     message,
-    expirationDate
+    expirationDate,
   );
   // console.log("user from auth handle function", user);
 
-  localStorage.setItem("userData", JSON.stringify(user));
+  localStorage.setItem('userData', JSON.stringify(user));
   // console.log("check 1");
 
   const payload = {
@@ -134,9 +135,9 @@ const SchoolHandleAuthentication = (
       __v: number;
     };
   },
-  message: string
+  message: string,
 ) => {
-  console.log("data from handle auth function", data.access_token);
+  console.log('data from handle auth function', data.access_token);
 
   const expirationDate = new Date(new Date().getTime() + 600 * 1000);
   const user = new School(
@@ -156,11 +157,11 @@ const SchoolHandleAuthentication = (
     data.user._id,
     data.user.__v,
     message,
-    expirationDate
+    expirationDate,
   );
   // console.log("user from auth handle function", user);
 
-  localStorage.setItem("schoolData", JSON.stringify(user));
+  localStorage.setItem('schoolData', JSON.stringify(user));
   // console.log("check 1");
 
   const payload = {
@@ -187,7 +188,7 @@ const SchoolHandleAuthentication = (
     expirationDate: expirationDate,
     redirect: true,
   };
-  console.log("check 2", payload.redirect);
+  console.log('check 2', payload.redirect);
 
   // console.log("success", new AuthActions.AuthenticateSuccess(payload));
 
@@ -197,40 +198,40 @@ const SchoolHandleAuthentication = (
 const handleError = (errorRes: any) => {
   // console.log("errorRes", errorRes);
 
-  let errorMessage = "An unknown error occurred!";
+  let errorMessage = 'An unknown error occurred!';
   if (!errorRes.error || !errorRes.error.error) {
     return of(new AuthActions.AuthenticateFail(errorMessage));
   }
   switch (errorRes.error.error.message) {
-    case "EMAIL_EXISTS":
-      errorMessage = "This email exists already";
+    case 'EMAIL_EXISTS':
+      errorMessage = 'This email exists already';
       break;
-    case "EMAIL_NOT_FOUND":
-      errorMessage = "This email does not exist.";
+    case 'EMAIL_NOT_FOUND':
+      errorMessage = 'This email does not exist.';
       break;
-    case "INVALID_PASSWORD":
-      errorMessage = "This password is not correct.";
+    case 'INVALID_PASSWORD':
+      errorMessage = 'This password is not correct.';
       break;
   }
   return of(new AuthActions.AuthenticateFail(errorMessage));
 };
 
 const SchoolhandleError = (errorRes: any) => {
-  console.log("errorRes", errorRes);
+  console.log('errorRes', errorRes);
 
-  let errorMessage = "An unknown error occurred!";
+  let errorMessage = 'An unknown error occurred!';
   if (!errorRes.error || !errorRes.error.error) {
     return of(new AuthActions.SchoolAuthenticateFail(errorMessage));
   }
   switch (errorRes.error.error.message) {
-    case "EMAIL_EXISTS":
-      errorMessage = "This email exists already";
+    case 'EMAIL_EXISTS':
+      errorMessage = 'This email exists already';
       break;
-    case "EMAIL_NOT_FOUND":
-      errorMessage = "This email does not exist.";
+    case 'EMAIL_NOT_FOUND':
+      errorMessage = 'This email does not exist.';
       break;
-    case "INVALID_PASSWORD":
-      errorMessage = "This password is not correct.";
+    case 'INVALID_PASSWORD':
+      errorMessage = 'This password is not correct.';
       break;
   }
   return of(new AuthActions.SchoolAuthenticateFail(errorMessage));
@@ -246,7 +247,7 @@ export class AuthEffects {
 
       return this.http
         .post<AuthResponseData>(
-          "http://localhost:3000/users/create",
+          'http://localhost:3000/users/create',
           // +environment.firebaseAPIKey
           {
             userName: signupAction.payload.userName,
@@ -254,7 +255,7 @@ export class AuthEffects {
             role: signupAction.payload.role,
             // password: signupAction.payload.password,
             // returnSecureToken: true,
-          }
+          },
         )
         .pipe(
           tap((resData) => {
@@ -282,7 +283,7 @@ export class AuthEffects {
 
             return handleAuthentication(
               data,
-              resData.message
+              resData.message,
               // resData.expiration,
               // resData.redirect
             );
@@ -291,33 +292,33 @@ export class AuthEffects {
             // console.log("errorRes", errorRes.toString());
 
             return handleError(errorRes);
-          })
+          }),
         );
-    })
+    }),
   );
 
   @Effect()
   schoolAuthSignup = this.actions$.pipe(
     ofType(AuthActions.SCHOOL_SIGNUP_START),
     switchMap((signupAction: AuthActions.SchoolSignupStart) => {
-      console.log("signupAction.payload.userName", signupAction.payload);
+      console.log('signupAction.payload.userName', signupAction.payload);
 
       return this.http
         .post<SchoolAuthResponseData>(
-          "http://localhost:3000/school/create",
+          'http://localhost:3000/school/create',
           // +environment.firebaseAPIKey
           {
             name: signupAction.payload.name,
             email: signupAction.payload.email,
             address: signupAction.payload.address,
-            photo: signupAction.payload.photo ? signupAction.payload.photo : "",
+            photo: signupAction.payload.photo ? signupAction.payload.photo : '',
             zipCode: signupAction.payload.zipCode.toString(),
             city: signupAction.payload.city,
             state: signupAction.payload.state,
             country: signupAction.payload.country,
             // password: signupAction.payload.password,
             // returnSecureToken: true,
-          }
+          },
         )
         .pipe(
           tap((resData) => {
@@ -326,7 +327,7 @@ export class AuthEffects {
             this.authService.setLogoutTimer(600 * 1000);
           }),
           map((resData) => {
-            console.log("check1", resData.data);
+            console.log('check1', resData.data);
 
             const data = {
               access_token: resData.data.access_token,
@@ -351,7 +352,7 @@ export class AuthEffects {
 
             return SchoolHandleAuthentication(
               data,
-              resData.message
+              resData.message,
               // resData.expiration,
               // resData.redirect
             );
@@ -360,9 +361,9 @@ export class AuthEffects {
             // console.log("errorRes", errorRes.toString());
 
             return SchoolhandleError(errorRes);
-          })
+          }),
         );
-    })
+    }),
   );
 
   @Effect()
@@ -371,13 +372,13 @@ export class AuthEffects {
     switchMap((authData: AuthActions.LoginStart) => {
       return this.http
         .post<AuthResponseData>(
-          "http://localhost:3000/users/login",
+          'http://localhost:3000/users/login',
           //  +environment.firebaseAPIKey
           {
             email: authData.payload.email,
             password: authData.payload.password,
             // returnSecureToken: true,
-          }
+          },
         )
         .pipe(
           tap((resData) => {
@@ -409,9 +410,9 @@ export class AuthEffects {
             // console.log("errorRes", errorRes);
 
             return handleError(errorRes);
-          })
+          }),
         );
-    })
+    }),
   );
 
   @Effect()
@@ -420,13 +421,13 @@ export class AuthEffects {
     switchMap((authData: AuthActions.SchoolLoginStart) => {
       return this.http
         .post<SchoolAuthResponseData>(
-          "http://localhost:3000/school/login",
+          'http://localhost:3000/school/login',
           //  +environment.firebaseAPIKey
           {
             email: authData.payload.email,
             password: authData.payload.password,
             // returnSecureToken: true,
-          }
+          },
         )
         .pipe(
           tap((resData) => {
@@ -464,9 +465,9 @@ export class AuthEffects {
             // console.log("errorRes", errorRes);
 
             return SchoolhandleError(errorRes);
-          })
+          }),
         );
-    })
+    }),
   );
 
   @Effect({ dispatch: false })
@@ -474,9 +475,9 @@ export class AuthEffects {
     ofType(AuthActions.AUTHENTICATE_SUCCESS),
     tap((authSuccessAction: AuthActions.AuthenticateSuccess) => {
       if (authSuccessAction.payload.redirect) {
-        this.router.navigate(["/dashboard"]);
+        this.router.navigate(['/dashboard']);
       }
-    })
+    }),
   );
 
   @Effect({ dispatch: false })
@@ -484,14 +485,14 @@ export class AuthEffects {
     ofType(AuthActions.SCHOOL_AUTHENTICATE_SUCCESS),
     tap((authSuccessAction: AuthActions.SchoolAuthenticateSuccess) => {
       if (authSuccessAction.payload.redirect) {
-        console.log("inside success redirect");
+        console.log('inside success redirect');
 
-        console.log("before");
+        console.log('before');
 
-        this.router.navigate(["/schools"]);
-        console.log("after");
+        this.router.navigate(['/schools']);
+        console.log('after');
       }
-    })
+    }),
   );
 
   // @Effect()
@@ -632,13 +633,13 @@ export class AuthEffects {
   autoLogin = this.actions$.pipe(
     ofType(AuthActions.AUTO_LOGIN),
     map(() => {
-      const userData = JSON.parse(localStorage.getItem("userData"));
-      const schoolData = JSON.parse(localStorage.getItem("schoolData"));
-      console.log("inside autologin user", userData);
-      console.log("inside autologin school", schoolData);
+      const userData = JSON.parse(localStorage.getItem('userData'));
+      const schoolData = JSON.parse(localStorage.getItem('schoolData'));
+      console.log('inside autologin user', userData);
+      console.log('inside autologin school', schoolData);
 
       if (!userData && !schoolData) {
-        return { type: "DUMMY" };
+        return { type: 'DUMMY' };
       }
 
       if (userData) {
@@ -653,7 +654,7 @@ export class AuthEffects {
           userData._id,
           userData.__v,
           userData.message,
-          new Date(userData.expirationDate)
+          new Date(userData.expirationDate),
           // new Date(userData._tokenExpirationDate)
         );
         const expirationDuration =
@@ -706,7 +707,7 @@ export class AuthEffects {
           schoolData._id,
           schoolData.__v,
           schoolData.message,
-          new Date(schoolData.expirationDate)
+          new Date(schoolData.expirationDate),
           // new Date(userData._tokenExpirationDate)
         );
         const expirationDuration =
@@ -737,8 +738,8 @@ export class AuthEffects {
           redirect: false,
         });
       }
-      return { type: "DUMMY" };
-    })
+      return { type: 'DUMMY' };
+    }),
   );
 
   @Effect({ dispatch: false })
@@ -746,9 +747,10 @@ export class AuthEffects {
     ofType(AuthActions.LOGOUT),
     tap(() => {
       this.authService.clearLogoutTimer();
-      localStorage.removeItem("userData");
-      this.router.navigate(["/auth"]);
-    })
+      localStorage.removeItem('userData');
+      localStorage.removeItem('selectedSchool');
+      this.router.navigate(['/auth']);
+    }),
   );
 
   @Effect({ dispatch: false })
@@ -756,15 +758,16 @@ export class AuthEffects {
     ofType(AuthActions.SCHOOL_LOGOUT),
     tap(() => {
       this.authService.clearLogoutTimer();
-      localStorage.removeItem("schoolData");
-      this.router.navigate(["/auth"]);
-    })
+      localStorage.removeItem('schoolData');
+      localStorage.removeItem('selectedSchool');
+      this.router.navigate(['/auth']);
+    }),
   );
 
   constructor(
     private actions$: Actions,
     private http: HttpClient,
     private router: Router,
-    private authService: AuthService
+    private authService: AuthService,
   ) {}
 }

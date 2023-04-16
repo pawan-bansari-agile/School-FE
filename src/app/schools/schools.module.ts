@@ -1,17 +1,20 @@
-import { NgModule } from "@angular/core";
-import { CommonModule } from "@angular/common";
-import { FormsModule } from "@angular/forms";
-import { RouterModule } from "@angular/router";
-import { SchoolsComponent } from "./schools.component";
-import { SharedModule } from "../shared/shared.module";
+import { NgModule } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router';
+import { SchoolsComponent } from './schools.component';
+import { SharedModule } from '../shared/shared.module';
+import { SchoolItemComponent } from './school-item/school-item.component';
+import { AuthGuard } from '../auth/auth.guard';
 
 @NgModule({
-  declarations: [SchoolsComponent],
+  declarations: [SchoolsComponent, SchoolItemComponent],
   imports: [
     CommonModule,
-    FormsModule,
-    RouterModule.forChild([{ path: "", component: SchoolsComponent }]),
+    ReactiveFormsModule,
+    RouterModule.forChild([{ path: '', component: SchoolsComponent }]),
     SharedModule,
+    FormsModule,
   ],
 })
 export class SchoolsModule {}

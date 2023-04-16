@@ -1,20 +1,29 @@
-import { School } from "../../auth/school.model";
-import * as SchoolActions from "./school.actions";
+import { School, UpdatedSchool } from '../../auth/school.model';
+import * as SchoolActions from './school.actions';
 
 export interface State {
   schools: School[];
+  school: School;
+  updatedSchool: UpdatedSchool;
 }
 
 const initialState: State = {
   schools: [],
+  school: null,
+  updatedSchool: null,
 };
 
 export function schoolReducer(
   state = initialState,
-  action: SchoolActions.SchoolActions
+  action: SchoolActions.SchoolActions,
 ) {
   switch (action.type) {
     case SchoolActions.SET_SCHOOLS:
+      return {
+        ...state,
+        school: action.payload,
+      };
+    case SchoolActions.SET_SCHOOLSS:
       return {
         ...state,
         schools: [...action.payload],
@@ -26,16 +35,15 @@ export function schoolReducer(
     //   };
     case SchoolActions.UPDATE_SCHOOL:
       const updatedSchool = {
-        ...state.schools[action.payload.index],
-        ...action.payload.newSchool,
+        ...action.payload,
       };
 
-      const updatedSchools = [...state.schools];
-      updatedSchools[action.payload.index] = updatedSchool;
+      // const updatedSchools = [...state.schools];
+      // updatedSchools[action.payload.index] = updatedSchool;
 
       return {
         ...state,
-        schools: updatedSchools,
+        updatedSchool: updatedSchool,
       };
     case SchoolActions.DELETE_SCHOOL:
       return {
@@ -47,8 +55,15 @@ export function schoolReducer(
     case SchoolActions.FIND_ONE_SCHOOL:
       return {
         ...state,
-        schools:
-      }
+        schools: state.schools.filter((school) => {
+          return school._id === action.payload;
+        }),
+      };
+    case SchoolActions.AUTO_FETCH:
+      return {
+        ...state,
+        school: state.school,
+      };
     default:
       return state;
   }

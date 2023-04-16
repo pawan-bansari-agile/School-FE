@@ -34,7 +34,7 @@ export class School {
     // _token: string;
     // _tokenExpirationDate: Date;
     public message: string,
-    public expirationDate?: Date
+    public expirationDate?: Date,
   ) {
     access_token = access_token;
     name = name;
@@ -53,6 +53,55 @@ export class School {
     country = country;
     message = message;
     expirationDate = expirationDate;
+  }
+
+  // get token() {
+  //   if (!this.forgetPwdExpires || new Date() > this._tokenExpirationDate) {
+  //     return null;
+  //   }
+  //   return this._token;
+  // }
+}
+
+export class UpdatedSchool {
+  // data: {
+  //   access_token: string;
+  //   existingUser: {
+  //     userName: string;
+  //     email: string;
+  //     role: string;
+  //     forgetPwdToken: string;
+  //     forgetPwdExpires: Date;
+  //     deleted: string;
+  //     _id: string;
+  //     __v: number;
+  //   };
+  // };
+  // message: string;
+  // expirationDate?: Date;
+
+  constructor(
+    public name: string,
+    public email: string,
+    public address: string,
+    public photo: string,
+    public zipCode: number,
+    public city: string,
+    public state: string,
+    public country: string,
+    public _id: string,
+  ) // _token: string;
+  // _tokenExpirationDate: Date;
+  {
+    name = name;
+    email = email;
+    _id = _id;
+    address = address;
+    photo = photo;
+    zipCode = zipCode;
+    city = city;
+    state = state;
+    country = country;
   }
 
   // get token() {

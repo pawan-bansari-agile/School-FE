@@ -1,1 +1,41 @@
-<p>schools works!</p>
+<!-- <div class="schools-container">
+  <div class="schools-list">
+    <h2>Schools</h2>
+    <ul class="list-group">
+      <li class="list-group-item" style="cursor: pointer;" *ngFor="let school of schools$ | async" (click)="selectSchool(school)">
+        {{ school.name }}
+      </li>
+    </ul>
+    <p *ngIf="(schools$ | async)?.length === 0" class="text-muted">No schools available.</p>
+  </div>
+  <div class="school-details">
+    <h2>School Details</h2>
+    <div *ngIf="selectedSchool$ as selectedSchool">
+      <h3>{{ selectedSchool.name }}</h3>
+      <p>{{ selectedSchool.address }}</p>
+    </div>
+    <div *ngIf="!selectedSchool$">
+      <p>No school selected.</p>
+    </div>
+  </div>
+</div> -->
+<div class="schools-container">
+  <div class="schools-list">
+    <h2>Schools</h2>
+    <ul class="list-group">
+      <li class="list-group-item" style="cursor: pointer;" *ngFor="let school of schools$ | async" (click)="selectSchool(school)">
+        {{ school.name }}
+      </li>
+    </ul>
+    <p *ngIf="(schools$ | async)?.length === 0" class="text-muted">No schools available.</p>
+  </div>
+  <div class="school-details">
+    <h2>School Details</h2>
+    <div *ngIf="selectedSchool$ as selectedSchool">
+      <app-school-item></app-school-item>
+    </div>
+    <div *ngIf="!selectedSchool$">
+      <p>No school selected.</p>
+    </div>
+  </div>
+</div>
