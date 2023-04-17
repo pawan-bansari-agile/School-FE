@@ -1,23 +1,23 @@
 import { Component, Input, OnInit } from "@angular/core";
-import { NgForm } from "@angular/forms";
 import { Store } from "@ngrx/store";
 import { Subscription } from "rxjs";
-import { map } from "rxjs/operators";
-import { School } from "src/app/auth/school.model";
+import { Student } from "../student.model";
 import * as fromApp from "../../store/app.reducer";
-import * as SchoolActions from "../store/school.actions";
+import { map } from "rxjs/operators";
+import { NgForm } from "@angular/forms";
+import * as StudentActions from "../store/student.actions";
 
 @Component({
-  selector: "app-school-item",
-  templateUrl: "./school-item.component.html",
-  styleUrls: ["./school-item.component.css"],
+  selector: "app-student-item",
+  templateUrl: "./student-item.component.html",
+  styleUrls: ["./student-item.component.css"],
 })
-export class SchoolItemComponent implements OnInit {
+export class StudentItemComponent implements OnInit {
   roleSub: Subscription;
   role: string = "";
   schoolId: string = "";
-  school: School | null = null;
-  @Input() selectedSchool: School | null = null;
+  student: Student | null = null;
+  @Input() selectedStudent: Student | null = null;
 
   constructor(private store: Store<fromApp.AppState>) {}
 
@@ -35,27 +35,25 @@ export class SchoolItemComponent implements OnInit {
 
   onSubmit(form: NgForm) {
     const name = form.value.name;
+    const parentNumber = form.value.parentNumber;
     const address = form.value.address;
+    const std = form.value.std;
     const photo = form.value.photo;
-    const zipCode = form.value.zipCode.toString();
-    const city = form.value.city;
-    const state = form.value.state;
-    const country = form.value.country;
-    const email = form.value.email;
-    const _id = form.value._id;
+    const dob = form.value.dob;
+    const status = form.value.status;
+    const _id = this.selectedStudent._id;
 
     const payload = {
       name: name,
       address: address,
       photo: photo,
-      zipCode: zipCode,
-      city: city,
-      state: state,
-      country: country,
-      email: email,
+      parentNumber: parentNumber,
+      std: std,
+      dob: dob,
+      status: status,
       _id: _id,
     };
 
-    this.store.dispatch(new SchoolActions.UpdateSchool(payload));
+    this.store.dispatch(new StudentActions.UpdateStudent(payload));
   }
 }

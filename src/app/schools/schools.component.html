@@ -1,27 +1,36 @@
-<!-- <div class="schools-container">
-  <div class="schools-list">
-    <h2>Schools</h2>
-    <ul class="list-group">
-      <li class="list-group-item" style="cursor: pointer;" *ngFor="let school of schools$ | async" (click)="selectSchool(school)">
-        {{ school.name }}
-      </li>
-    </ul>
-    <p *ngIf="(schools$ | async)?.length === 0" class="text-muted">No schools available.</p>
-  </div>
-  <div class="school-details">
-    <h2>School Details</h2>
-    <div *ngIf="selectedSchool$ as selectedSchool">
-      <h3>{{ selectedSchool.name }}</h3>
-      <p>{{ selectedSchool.address }}</p>
-    </div>
-    <div *ngIf="!selectedSchool$">
-      <p>No school selected.</p>
-    </div>
-  </div>
-</div> -->
+
 <div class="schools-container">
   <div class="schools-list">
     <h2>Schools</h2>
+    <form #searchForm="ngForm" (ngSubmit)="onSearch(searchForm)">
+      <input placeholder="Search by School ID"
+      type="text"
+      id="search"
+      class="form-control"
+      ngModel
+      name="search"
+      >
+      <button
+            class="btn btn-primary"
+            type="submit"
+            [disabled]="searchForm.value.search == ''"
+          >
+          Search
+          </button>
+    </form>
+    <div *ngIf="!!searchedSchool" class="card">
+      <div class="card-body">
+        <h4 class="card-title">{{ searchedSchool.name }}</h4>
+        <h6 class="card-subtitle mb-2 text-muted">{{ searchedSchool.email }}</h6>
+        <p class="card-text">{{ searchedSchool.address }}</p>
+        <p class="card-text">{{ searchedSchool.zipCode }}</p>
+        <p class="card-text">{{ searchedSchool.city }}</p>
+        <p class="card-text">{{ searchedSchool.state }}</p>
+        <p class="card-text">{{ searchedSchool.country }}</p>
+      </div>
+    </div>
+
+    <hr>
     <ul class="list-group">
       <li class="list-group-item" style="cursor: pointer;" *ngFor="let school of schools$ | async" (click)="selectSchool(school)">
         {{ school.name }}
@@ -31,9 +40,8 @@
   </div>
   <div class="school-details">
     <h2>School Details</h2>
-    <div *ngIf="selectedSchool$ as selectedSchool">
-      <app-school-item></app-school-item>
-    </div>
+    <app-school-item *ngIf="selectedSchool$" [selectedSchool]="selectedSchool$"></app-school-item>
+
     <div *ngIf="!selectedSchool$">
       <p>No school selected.</p>
     </div>

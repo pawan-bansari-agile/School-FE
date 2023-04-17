@@ -1,15 +1,15 @@
-import { Injectable } from '@angular/core';
-import { Router } from '@angular/router';
-import { Actions, ofType, Effect } from '@ngrx/effects';
-import { switchMap, catchError, map, tap } from 'rxjs/operators';
-import { of } from 'rxjs';
-import { HttpClient } from '@angular/common/http';
+import { Injectable } from "@angular/core";
+import { Router } from "@angular/router";
+import { Actions, ofType, Effect } from "@ngrx/effects";
+import { switchMap, catchError, map, tap } from "rxjs/operators";
+import { of } from "rxjs";
+import { HttpClient } from "@angular/common/http";
 
-import * as AuthActions from './auth.actions';
-import { User } from '../user.model';
-import { AuthService } from '../auth.service';
-import { School } from 'src/app/auth/school.model';
-import * as SchoolActions from '../../schools/store/school.actions';
+import * as AuthActions from "./auth.actions";
+import { User } from "../user.model";
+import { AuthService } from "../auth.service";
+import { School } from "src/app/auth/school.model";
+import * as SchoolActions from "../../schools/store/school.actions";
 
 export interface AuthResponseData {
   data: {
@@ -67,10 +67,8 @@ const handleAuthentication = (
       __v: number;
     };
   },
-  message: string,
+  message: string
 ) => {
-  // console.log("data from handle auth function", data.access_token);
-
   const expirationDate = new Date(new Date().getTime() + 600 * 1000);
   const user = new User(
     data.access_token,
@@ -83,12 +81,10 @@ const handleAuthentication = (
     data.user._id,
     data.user.__v,
     message,
-    expirationDate,
+    expirationDate
   );
-  // console.log("user from auth handle function", user);
 
-  localStorage.setItem('userData', JSON.stringify(user));
-  // console.log("check 1");
+  localStorage.setItem("userData", JSON.stringify(user));
 
   const payload = {
     data: {
@@ -108,9 +104,6 @@ const handleAuthentication = (
     expirationDate: expirationDate,
     redirect: true,
   };
-  // console.log("check 2");
-
-  // console.log("success", new AuthActions.AuthenticateSuccess(payload));
 
   return new AuthActions.AuthenticateSuccess(payload);
 };
@@ -135,10 +128,8 @@ const SchoolHandleAuthentication = (
       __v: number;
     };
   },
-  message: string,
+  message: string
 ) => {
-  console.log('data from handle auth function', data.access_token);
-
   const expirationDate = new Date(new Date().getTime() + 600 * 1000);
   const user = new School(
     data.access_token,
@@ -157,12 +148,10 @@ const SchoolHandleAuthentication = (
     data.user._id,
     data.user.__v,
     message,
-    expirationDate,
+    expirationDate
   );
-  // console.log("user from auth handle function", user);
 
-  localStorage.setItem('schoolData', JSON.stringify(user));
-  // console.log("check 1");
+  localStorage.setItem("schoolData", JSON.stringify(user));
 
   const payload = {
     data: {
@@ -188,50 +177,43 @@ const SchoolHandleAuthentication = (
     expirationDate: expirationDate,
     redirect: true,
   };
-  console.log('check 2', payload.redirect);
-
-  // console.log("success", new AuthActions.AuthenticateSuccess(payload));
 
   return new AuthActions.SchoolAuthenticateSuccess(payload);
 };
 
 const handleError = (errorRes: any) => {
-  // console.log("errorRes", errorRes);
-
-  let errorMessage = 'An unknown error occurred!';
+  let errorMessage = "An unknown error occurred!";
   if (!errorRes.error || !errorRes.error.error) {
     return of(new AuthActions.AuthenticateFail(errorMessage));
   }
   switch (errorRes.error.error.message) {
-    case 'EMAIL_EXISTS':
-      errorMessage = 'This email exists already';
+    case "EMAIL_EXISTS":
+      errorMessage = "This email exists already";
       break;
-    case 'EMAIL_NOT_FOUND':
-      errorMessage = 'This email does not exist.';
+    case "EMAIL_NOT_FOUND":
+      errorMessage = "This email does not exist.";
       break;
-    case 'INVALID_PASSWORD':
-      errorMessage = 'This password is not correct.';
+    case "INVALID_PASSWORD":
+      errorMessage = "This password is not correct.";
       break;
   }
   return of(new AuthActions.AuthenticateFail(errorMessage));
 };
 
 const SchoolhandleError = (errorRes: any) => {
-  console.log('errorRes', errorRes);
-
-  let errorMessage = 'An unknown error occurred!';
+  let errorMessage = "An unknown error occurred!";
   if (!errorRes.error || !errorRes.error.error) {
     return of(new AuthActions.SchoolAuthenticateFail(errorMessage));
   }
   switch (errorRes.error.error.message) {
-    case 'EMAIL_EXISTS':
-      errorMessage = 'This email exists already';
+    case "EMAIL_EXISTS":
+      errorMessage = "This email exists already";
       break;
-    case 'EMAIL_NOT_FOUND':
-      errorMessage = 'This email does not exist.';
+    case "EMAIL_NOT_FOUND":
+      errorMessage = "This email does not exist.";
       break;
-    case 'INVALID_PASSWORD':
-      errorMessage = 'This password is not correct.';
+    case "INVALID_PASSWORD":
+      errorMessage = "This password is not correct.";
       break;
   }
   return of(new AuthActions.SchoolAuthenticateFail(errorMessage));
@@ -243,29 +225,17 @@ export class AuthEffects {
   authSignup = this.actions$.pipe(
     ofType(AuthActions.SIGNUP_START),
     switchMap((signupAction: AuthActions.SignupStart) => {
-      // console.log("signupAction.payload.userName", signupAction.payload);
-
       return this.http
-        .post<AuthResponseData>(
-          'http://localhost:3000/users/create',
-          // +environment.firebaseAPIKey
-          {
-            userName: signupAction.payload.userName,
-            email: signupAction.payload.email,
-            role: signupAction.payload.role,
-            // password: signupAction.payload.password,
-            // returnSecureToken: true,
-          },
-        )
+        .post<AuthResponseData>("http://localhost:3000/users/create", {
+          userName: signupAction.payload.userName,
+          email: signupAction.payload.email,
+          role: signupAction.payload.role,
+        })
         .pipe(
           tap((resData) => {
-            // console.log("resData", resData);
-
             this.authService.setLogoutTimer(600 * 1000);
           }),
           map((resData) => {
-            // console.log("check1", resData.data);
-
             const data = {
               access_token: resData.data.access_token,
               user: {
@@ -279,56 +249,36 @@ export class AuthEffects {
                 __v: resData.data.user.__v,
               },
             };
-            // console.log("inside map", data, resData);
 
-            return handleAuthentication(
-              data,
-              resData.message,
-              // resData.expiration,
-              // resData.redirect
-            );
+            return handleAuthentication(data, resData.message);
           }),
           catchError((errorRes) => {
-            // console.log("errorRes", errorRes.toString());
-
             return handleError(errorRes);
-          }),
+          })
         );
-    }),
+    })
   );
 
   @Effect()
   schoolAuthSignup = this.actions$.pipe(
     ofType(AuthActions.SCHOOL_SIGNUP_START),
     switchMap((signupAction: AuthActions.SchoolSignupStart) => {
-      console.log('signupAction.payload.userName', signupAction.payload);
-
       return this.http
-        .post<SchoolAuthResponseData>(
-          'http://localhost:3000/school/create',
-          // +environment.firebaseAPIKey
-          {
-            name: signupAction.payload.name,
-            email: signupAction.payload.email,
-            address: signupAction.payload.address,
-            photo: signupAction.payload.photo ? signupAction.payload.photo : '',
-            zipCode: signupAction.payload.zipCode.toString(),
-            city: signupAction.payload.city,
-            state: signupAction.payload.state,
-            country: signupAction.payload.country,
-            // password: signupAction.payload.password,
-            // returnSecureToken: true,
-          },
-        )
+        .post<SchoolAuthResponseData>("http://localhost:3000/school/create", {
+          name: signupAction.payload.name,
+          email: signupAction.payload.email,
+          address: signupAction.payload.address,
+          photo: signupAction.payload.photo ? signupAction.payload.photo : "",
+          zipCode: signupAction.payload.zipCode.toString(),
+          city: signupAction.payload.city,
+          state: signupAction.payload.state,
+          country: signupAction.payload.country,
+        })
         .pipe(
           tap((resData) => {
-            // console.log("resData", resData);
-
             this.authService.setLogoutTimer(600 * 1000);
           }),
           map((resData) => {
-            console.log('check1', resData.data);
-
             const data = {
               access_token: resData.data.access_token,
               user: {
@@ -348,22 +298,14 @@ export class AuthEffects {
                 __v: resData.data.user.__v,
               },
             };
-            // console.log("inside map", data, resData);
 
-            return SchoolHandleAuthentication(
-              data,
-              resData.message,
-              // resData.expiration,
-              // resData.redirect
-            );
+            return SchoolHandleAuthentication(data, resData.message);
           }),
           catchError((errorRes) => {
-            // console.log("errorRes", errorRes.toString());
-
             return SchoolhandleError(errorRes);
-          }),
+          })
         );
-    }),
+    })
   );
 
   @Effect()
@@ -371,24 +313,15 @@ export class AuthEffects {
     ofType(AuthActions.LOGIN_START),
     switchMap((authData: AuthActions.LoginStart) => {
       return this.http
-        .post<AuthResponseData>(
-          'http://localhost:3000/users/login',
-          //  +environment.firebaseAPIKey
-          {
-            email: authData.payload.email,
-            password: authData.payload.password,
-            // returnSecureToken: true,
-          },
-        )
+        .post<AuthResponseData>("http://localhost:3000/users/login", {
+          email: authData.payload.email,
+          password: authData.payload.password,
+        })
         .pipe(
           tap((resData) => {
-            // console.log("from tap", resData);
-
             this.authService.setLogoutTimer(600 * 1000);
           }),
           map((resData) => {
-            // console.log("resData", resData.data.access_token);
-
             const data = {
               access_token: resData.data.access_token,
               user: {
@@ -402,17 +335,14 @@ export class AuthEffects {
                 __v: resData.data.user.__v,
               },
             };
-            // console.log("from map", data);
 
             return handleAuthentication(data, resData.message);
           }),
           catchError((errorRes) => {
-            // console.log("errorRes", errorRes);
-
             return handleError(errorRes);
-          }),
+          })
         );
-    }),
+    })
   );
 
   @Effect()
@@ -420,24 +350,15 @@ export class AuthEffects {
     ofType(AuthActions.SCHOOL_LOGIN_START),
     switchMap((authData: AuthActions.SchoolLoginStart) => {
       return this.http
-        .post<SchoolAuthResponseData>(
-          'http://localhost:3000/school/login',
-          //  +environment.firebaseAPIKey
-          {
-            email: authData.payload.email,
-            password: authData.payload.password,
-            // returnSecureToken: true,
-          },
-        )
+        .post<SchoolAuthResponseData>("http://localhost:3000/school/login", {
+          email: authData.payload.email,
+          password: authData.payload.password,
+        })
         .pipe(
           tap((resData) => {
-            // console.log("from tap", resData);
-
             this.authService.setLogoutTimer(600 * 1000);
           }),
           map((resData) => {
-            // console.log("resData", resData.data.access_token);
-
             const data = {
               access_token: resData.data.access_token,
               user: {
@@ -457,17 +378,14 @@ export class AuthEffects {
                 __v: resData.data.user.__v,
               },
             };
-            // console.log("from map", data);
 
             return SchoolHandleAuthentication(data, resData.message);
           }),
           catchError((errorRes) => {
-            // console.log("errorRes", errorRes);
-
             return SchoolhandleError(errorRes);
-          }),
+          })
         );
-    }),
+    })
   );
 
   @Effect({ dispatch: false })
@@ -475,9 +393,9 @@ export class AuthEffects {
     ofType(AuthActions.AUTHENTICATE_SUCCESS),
     tap((authSuccessAction: AuthActions.AuthenticateSuccess) => {
       if (authSuccessAction.payload.redirect) {
-        this.router.navigate(['/dashboard']);
+        this.router.navigate(["/dashboard"]);
       }
-    }),
+    })
   );
 
   @Effect({ dispatch: false })
@@ -485,161 +403,20 @@ export class AuthEffects {
     ofType(AuthActions.SCHOOL_AUTHENTICATE_SUCCESS),
     tap((authSuccessAction: AuthActions.SchoolAuthenticateSuccess) => {
       if (authSuccessAction.payload.redirect) {
-        console.log('inside success redirect');
-
-        console.log('before');
-
-        this.router.navigate(['/schools']);
-        console.log('after');
+        this.router.navigate(["/schools"]);
       }
-    }),
+    })
   );
-
-  // @Effect()
-  // autoLogin = this.actions$.pipe(
-  //   ofType(AuthActions.AUTO_LOGIN),
-  //   map(() => {
-  //     const userData = JSON.parse(localStorage.getItem("userData"));
-  //     const schoolData = JSON.parse(localStorage.getItem("schoolData"));
-  //     console.log("inside autologin user", userData);
-  //     console.log("inside autologin school", schoolData);
-
-  //     if (!userData) {
-  //       return { type: "DUMMY" };
-  //     }
-
-  //     const loadedUser = new User(
-  //       userData.access_token,
-  //       userData.userName,
-  //       userData.email,
-  //       userData.role,
-  //       userData.forgetPwdToken,
-  //       userData.forgetPwdExpires,
-  //       userData.deleted,
-  //       userData._id,
-  //       userData.__v,
-  //       userData.message,
-  //       new Date(userData.expirationDate)
-  //       // new Date(userData._tokenExpirationDate)
-  //     );
-  //     // console.log("loadedUser", loadedUser);
-
-  //     if (loadedUser.access_token) {
-  //       // this.user.next(loadedUser);
-  //       const expirationDuration =
-  //         new Date(userData.expirationDate).getTime() - new Date().getTime();
-  //       this.authService.setLogoutTimer(expirationDuration);
-  //       return new AuthActions.AuthenticateSuccess({
-  //         data: {
-  //           access_token: loadedUser.access_token,
-  //           user: {
-  //             userName: loadedUser.userName,
-  //             email: loadedUser.email,
-  //             role: loadedUser.role,
-  //             forgetPwdToken: loadedUser.forgetPwdToken,
-  //             forgetPwdExpires: loadedUser.forgetPwdExpires,
-  //             deleted: loadedUser.deleted,
-  //             _id: loadedUser._id,
-  //             __v: loadedUser.__v,
-  //           },
-  //         },
-  //         message: loadedUser.message,
-  //         expirationDate: new Date(userData.expirationDate),
-  //         redirect: false,
-  //       });
-
-  //       // const expirationDuration =
-  //       //   new Date(userData._tokenExpirationDate).getTime() -
-  //       //   new Date().getTime();
-  //       // this.autoLogout(expirationDuration);
-  //     }
-  //     return { type: "DUMMY" };
-  //   })
-  // );
-
-  // @Effect()
-  // schoolAutoLogin = this.actions$.pipe(
-  //   ofType(AuthActions.SCHOOL_AUTO_LOGIN),
-  //   map(() => {
-  //     const userData = JSON.parse(localStorage.getItem("schoolData"));
-  //     console.log("inside school suto login", userData);
-
-  //     if (!userData) {
-  //       return { type: "DUMMY" };
-  //     }
-
-  //     const loadedUser = new School(
-  //       userData.access_token,
-  //       userData.name,
-  //       userData.email,
-  //       userData.address,
-  //       userData.photo,
-  //       userData.zipCode,
-  //       userData.city,
-  //       userData.state,
-  //       userData.country,
-  //       userData.role,
-  //       userData.forgetPwdToken,
-  //       userData.forgetPwdExpires,
-  //       userData.deleted,
-  //       userData._id,
-  //       userData.__v,
-  //       userData.message,
-  //       new Date(userData.expirationDate)
-  //       // new Date(userData._tokenExpirationDate)
-  //     );
-  //     // console.log("loadedUser", loadedUser);
-
-  //     if (loadedUser.access_token) {
-  //       // this.user.next(loadedUser);
-  //       const expirationDuration =
-  //         new Date(userData.expirationDate).getTime() - new Date().getTime();
-  //       this.authService.setLogoutTimer(expirationDuration);
-  //       return new AuthActions.SchoolAuthenticateSuccess({
-  //         data: {
-  //           access_token: loadedUser.access_token,
-  //           user: {
-  //             name: loadedUser.name,
-  //             email: loadedUser.email,
-  //             address: loadedUser.address,
-  //             photo: loadedUser.photo,
-  //             zipCode: loadedUser.zipCode,
-  //             city: loadedUser.city,
-  //             state: loadedUser.state,
-  //             country: loadedUser.country,
-  //             role: loadedUser.role,
-  //             forgetPwdToken: loadedUser.forgetPwdToken,
-  //             forgetPwdExpires: loadedUser.forgetPwdExpires,
-  //             deleted: loadedUser.deleted,
-  //             _id: loadedUser._id,
-  //             __v: loadedUser.__v,
-  //           },
-  //         },
-  //         message: loadedUser.message,
-  //         expirationDate: new Date(userData.expirationDate),
-  //         redirect: false,
-  //       });
-
-  //       // const expirationDuration =
-  //       //   new Date(userData._tokenExpirationDate).getTime() -
-  //       //   new Date().getTime();
-  //       // this.autoLogout(expirationDuration);
-  //     }
-  //     return { type: "DUMMY" };
-  //   })
-  // );
 
   @Effect()
   autoLogin = this.actions$.pipe(
     ofType(AuthActions.AUTO_LOGIN),
     map(() => {
-      const userData = JSON.parse(localStorage.getItem('userData'));
-      const schoolData = JSON.parse(localStorage.getItem('schoolData'));
-      console.log('inside autologin user', userData);
-      console.log('inside autologin school', schoolData);
+      const userData = JSON.parse(localStorage.getItem("userData"));
+      const schoolData = JSON.parse(localStorage.getItem("schoolData"));
 
       if (!userData && !schoolData) {
-        return { type: 'DUMMY' };
+        return { type: "DUMMY" };
       }
 
       if (userData) {
@@ -654,8 +431,7 @@ export class AuthEffects {
           userData._id,
           userData.__v,
           userData.message,
-          new Date(userData.expirationDate),
-          // new Date(userData._tokenExpirationDate)
+          new Date(userData.expirationDate)
         );
         const expirationDuration =
           new Date(userData.expirationDate).getTime() - new Date().getTime();
@@ -679,16 +455,7 @@ export class AuthEffects {
           redirect: false,
         });
       }
-      // console.log("loadedUser", loadedUser);
 
-      // if (loadedUser.access_token) {
-      // this.user.next(loadedUser);
-
-      // const expirationDuration =
-      //   new Date(userData._tokenExpirationDate).getTime() -
-      //   new Date().getTime();
-      // this.autoLogout(expirationDuration);
-      // }
       if (schoolData) {
         const loadedSchool = new School(
           schoolData.access_token,
@@ -707,8 +474,7 @@ export class AuthEffects {
           schoolData._id,
           schoolData.__v,
           schoolData.message,
-          new Date(schoolData.expirationDate),
-          // new Date(userData._tokenExpirationDate)
+          new Date(schoolData.expirationDate)
         );
         const expirationDuration =
           new Date(schoolData.expirationDate).getTime() - new Date().getTime();
@@ -738,8 +504,8 @@ export class AuthEffects {
           redirect: false,
         });
       }
-      return { type: 'DUMMY' };
-    }),
+      return { type: "DUMMY" };
+    })
   );
 
   @Effect({ dispatch: false })
@@ -747,10 +513,10 @@ export class AuthEffects {
     ofType(AuthActions.LOGOUT),
     tap(() => {
       this.authService.clearLogoutTimer();
-      localStorage.removeItem('userData');
-      localStorage.removeItem('selectedSchool');
-      this.router.navigate(['/auth']);
-    }),
+      localStorage.removeItem("userData");
+      localStorage.removeItem("selectedSchool");
+      this.router.navigate(["/auth"]);
+    })
   );
 
   @Effect({ dispatch: false })
@@ -758,16 +524,16 @@ export class AuthEffects {
     ofType(AuthActions.SCHOOL_LOGOUT),
     tap(() => {
       this.authService.clearLogoutTimer();
-      localStorage.removeItem('schoolData');
-      localStorage.removeItem('selectedSchool');
-      this.router.navigate(['/auth']);
-    }),
+      localStorage.removeItem("schoolData");
+      localStorage.removeItem("selectedSchool");
+      this.router.navigate(["/auth"]);
+    })
   );
 
   constructor(
     private actions$: Actions,
     private http: HttpClient,
     private router: Router,
-    private authService: AuthService,
+    private authService: AuthService
   ) {}
 }

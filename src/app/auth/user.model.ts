@@ -1,20 +1,4 @@
 export class User {
-  // data: {
-  //   access_token: string;
-  //   existingUser: {
-  //     userName: string;
-  //     email: string;
-  //     role: string;
-  //     forgetPwdToken: string;
-  //     forgetPwdExpires: Date;
-  //     deleted: string;
-  //     _id: string;
-  //     __v: number;
-  //   };
-  // };
-  // message: string;
-  // expirationDate?: Date;
-
   constructor(
     public access_token: string,
     public userName: string,
@@ -25,8 +9,7 @@ export class User {
     public deleted: string,
     public _id: string,
     public __v: number,
-    // _token: string;
-    // _tokenExpirationDate: Date;
+
     public message: string,
     public expirationDate?: Date
   ) {
@@ -42,11 +25,4 @@ export class User {
     message = message;
     expirationDate = expirationDate;
   }
-
-  // get token() {
-  //   if (!this.forgetPwdExpires || new Date() > this._tokenExpirationDate) {
-  //     return null;
-  //   }
-  //   return this._token;
-  // }
 }

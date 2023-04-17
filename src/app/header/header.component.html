@@ -12,32 +12,16 @@
         <li routerLinkActive="active" *ngIf="isAuthenticated == ''">
           <a routerLink="/auth">Authenticate User</a>
         </li>
-        <!-- <li routerLinkActive="active" *ngIf="isAuthenticated == ''">
-          <a routerLink="/schoolAuth">Authenticate School</a>
-        </li> -->
         <li routerLinkActive="active" *ngIf="isAuthenticated == 'Admin' || isAuthenticated == 'School'">
           <a routerLink="/schools">Schools</a>
         </li>
         <li routerLinkActive="active" *ngIf="isAuthenticated == 'Admin' || isAuthenticated == 'School'">
-          <a >Students</a>
+          <a routerLink="/students">Students</a>
         </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li *ngIf="isAuthenticated == 'Admin' || isAuthenticated == 'School'">
           <a style="cursor: pointer;" (click)="onLogout()">Logout</a>
-        </li>
-        <li class="dropdown" appDropdown *ngIf="isAuthenticated">
-          <a style="cursor: pointer;" class="dropdown-toggle" role="button"
-            >Manage <span class="caret"></span
-          ></a>
-          <ul class="dropdown-menu">
-            <li>
-              <a style="cursor: pointer;" (click)="onSaveData()">Save Data</a>
-            </li>
-            <li>
-              <a style="cursor: pointer;" (click)="onFetchData()">Fetch Data</a>
-            </li>
-          </ul>
         </li>
       </ul>
     </div>

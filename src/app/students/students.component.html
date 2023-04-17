@@ -1,0 +1,46 @@
+<div class="students-container">
+  <div class="students-list">
+    <h2>Students</h2>
+    <form #searchForm="ngForm" (ngSubmit)="onSearch(searchForm)">
+      <input placeholder="Search by Student ID"
+      type="text"
+      id="search"
+      class="form-control"
+      ngModel
+      name="search"
+      >
+      <button
+            class="btn btn-primary"
+            type="submit"
+            [disabled]="searchForm.value.search == ''"
+          >
+          Search
+          </button>
+    </form>
+    <div *ngIf="!!searchedStudent" class="card">
+      <div class="card-body">
+        <h4 class="card-title">{{ searchedStudent.name }}</h4>
+        <h6 class="card-subtitle mb-2 text-muted">{{ searchedStudent.parentNumber }}</h6>
+        <p class="card-text">{{ searchedStudent.address }}</p>
+        <p class="card-text">{{ searchedStudent.std }}</p>
+        <p class="card-text">{{ searchedStudent.dob }}</p>
+        <p class="card-text">{{ searchedStudent.status }}</p>
+      </div>
+    </div>
+
+    <hr>
+    <ul class="list-group">
+      <li class="list-group-item" style="cursor: pointer;" *ngFor="let student of students$ | async" (click)="selectSchool(student)">
+        {{ student.name }}
+      </li>
+    </ul>
+    <p *ngIf="(students$ | async)?.length === 0" class="text-muted">No students available.</p>
+  </div>
+  <div class="student-details">
+    <h2>Student Details</h2>
+    <app-student-item *ngIf="selectedStudent$" [selectedStudent]="selectedStudent$"></app-student-item>
+    <div *ngIf="!selectedStudent$">
+      <p>No school selected.</p>
+    </div>
+  </div>
+</div>

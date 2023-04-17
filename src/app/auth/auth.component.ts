@@ -67,20 +67,6 @@ export class AuthComponent implements OnInit, OnDestroy {
     const password = form.value.password;
     const role = form.value.role;
 
-    // if (this.isLoginMode === "Login as User") {
-    //   // authObs = this.authService.login(email, password);
-    //   this.store.dispatch(
-    //     new AuthActions.LoginStart({ email: email, password: password })
-    //   );
-    // } else {
-    //   this.store.dispatch(
-    //     new AuthActions.SignupStart({
-    //       userName: userName,
-    //       email: email,
-    //       role: role ? role : "Reader",
-    //     })
-    //   );
-    // }
     switch (this.isLoginMode) {
       case "Login as User":
         this.store.dispatch(
@@ -92,6 +78,27 @@ export class AuthComponent implements OnInit, OnDestroy {
           new AuthActions.SchoolLoginStart({ email: email, password: password })
         );
         break;
+      case "User SignUp":
+        this.store.dispatch(
+          new AuthActions.SignupStart({
+            userName: userName,
+            email: email,
+            role: role,
+          })
+        );
+      case "School SignUp":
+        this.store.dispatch(
+          new AuthActions.SchoolSignupStart({
+            name: name,
+            email: email,
+            address: address,
+            photo: photo,
+            zipCode: zipCode,
+            city: city,
+            state: state,
+            country: country,
+          })
+        );
     }
 
     form.reset();
@@ -111,7 +118,6 @@ export class AuthComponent implements OnInit, OnDestroy {
   }
 
   private showErrorAlert(message: string) {
-    // const alertCmp = new AlertComponent();
     const alertCmpFactory =
       this.componentFactoryResolver.resolveComponentFactory(AlertComponent);
     const hostViewContainerRef = this.alertHost.viewContainerRef;

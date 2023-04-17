@@ -1,20 +1,4 @@
 export class School {
-  // data: {
-  //   access_token: string;
-  //   existingUser: {
-  //     userName: string;
-  //     email: string;
-  //     role: string;
-  //     forgetPwdToken: string;
-  //     forgetPwdExpires: Date;
-  //     deleted: string;
-  //     _id: string;
-  //     __v: number;
-  //   };
-  // };
-  // message: string;
-  // expirationDate?: Date;
-
   constructor(
     public access_token: string,
     public name: string,
@@ -31,10 +15,8 @@ export class School {
     public deleted: string,
     public _id: string,
     public __v: number,
-    // _token: string;
-    // _tokenExpirationDate: Date;
     public message: string,
-    public expirationDate?: Date,
+    public expirationDate?: Date
   ) {
     access_token = access_token;
     name = name;
@@ -54,32 +36,9 @@ export class School {
     message = message;
     expirationDate = expirationDate;
   }
-
-  // get token() {
-  //   if (!this.forgetPwdExpires || new Date() > this._tokenExpirationDate) {
-  //     return null;
-  //   }
-  //   return this._token;
-  // }
 }
 
 export class UpdatedSchool {
-  // data: {
-  //   access_token: string;
-  //   existingUser: {
-  //     userName: string;
-  //     email: string;
-  //     role: string;
-  //     forgetPwdToken: string;
-  //     forgetPwdExpires: Date;
-  //     deleted: string;
-  //     _id: string;
-  //     __v: number;
-  //   };
-  // };
-  // message: string;
-  // expirationDate?: Date;
-
   constructor(
     public name: string,
     public email: string,
@@ -89,10 +48,8 @@ export class UpdatedSchool {
     public city: string,
     public state: string,
     public country: string,
-    public _id: string,
-  ) // _token: string;
-  // _tokenExpirationDate: Date;
-  {
+    public _id: string
+  ) {
     name = name;
     email = email;
     _id = _id;
@@ -103,11 +60,4 @@ export class UpdatedSchool {
     state = state;
     country = country;
   }
-
-  // get token() {
-  //   if (!this.forgetPwdExpires || new Date() > this._tokenExpirationDate) {
-  //     return null;
-  //   }
-  //   return this._token;
-  // }
 }
