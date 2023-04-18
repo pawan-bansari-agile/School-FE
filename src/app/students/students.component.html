@@ -29,16 +29,25 @@
     </div>
 
     <hr>
-    <div *ngIf="userRole === 'School'">
+    <div *ngIf="userRole === 'Admin'">
       <button
         class="btn btn-primary"
         type="button"
-        (click)="onNewStudent()"
+        (click)="onFilters()"
       >
-        Add New Student
+        Filters
       </button>
       <hr>
     </div>
+    <div *ngIf="userRole === 'School'" class="d-flex align-items-center">
+      <button class="btn btn-primary" type="button" (click)="onNewStudent()">
+        Add New Student
+      </button>
+      <button class="btn btn-secondary ml-auto" type="button" (click)="onFilters()">
+        Filters
+      </button>
+    </div>
+
     <div  *ngIf="!!createStud">
       <form #createForm="ngForm" (ngSubmit)="onSubmit(createForm)">
         <div class="form-group">
@@ -100,12 +109,85 @@
       </form>
       <hr>
     </div>
+    <div *ngIf="!!onFilter">
+        <div class="container-fluid">
+          <form #filterForm="ngForm" (ngSubmit)="onFilterSelected(filterForm)">
+            <div class="col-md-4">
+              <label for="fieldName" class="form-label">Field Name:</label>
+              <input
+              type="text"
+              class="form-control"
+              id="fieldName"
+              ngModel
+              name="fieldName">
+            </div>
+
+            <div class="col-md-4">
+              <label for="fieldValue" class="form-label">Field Value:</label>
+              <input
+              type="text"
+              class="form-control"
+              id="fieldValue"
+              ngModel
+              name="fieldValue"
+              >
+            </div>
+
+            <div class="col-md-4">
+              <label for="limit" class="form-label">Entries/page:</label>
+              <input
+              type="number"
+              class="form-control"
+              id="limit"
+              ngModel
+              name="limit"
+              >
+            </div>
+
+            <div class="col-md-4">
+              <label for="keyword" class="form-label">Keyword:</label>
+              <input
+              type="text"
+              class="form-control"
+              id="keyword"
+              ngModel
+              name="keyword"
+              >
+            </div>
+
+            <div class="col-md-4">
+              <label for="sortBy" class="form-label">Sort By:</label>
+              <input
+              type="text"
+              class="form-control"
+              id="sortBy"
+              ngModel
+              name="sortBy"
+              >
+            </div>
+
+            <div class="col-md-4">
+              <label for="sortOrder" class="form-label">Sort Order:</label>
+              <input
+              type="text"
+              class="form-control"
+              id="sortOrder"
+              ngModel
+              name="sortOrder"
+              >
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+          </form>
+        </div>
+
+    </div>
+    <hr>
     <ul class="list-group">
-      <li class="list-group-item" style="cursor: pointer;" *ngFor="let student of students$ | async" (click)="selectSchool(student)">
+      <li class="list-group-item" style="cursor: pointer;" *ngFor="let student of students$ " (click)="selectSchool(student)">
         {{ student.name }}
       </li>
     </ul>
-    <p *ngIf="(students$ | async)?.length === 0" class="text-muted">No students available.</p>
+    <p *ngIf="students$?.length === 0" class="text-muted">No students available.</p>
   </div>
   <div class="student-details">
     <h2>Student Details</h2>

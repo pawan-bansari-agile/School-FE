@@ -34,17 +34,23 @@ export function studentReducer(
         ...state,
         students: [...action.payload],
       };
+    case StudentActions.FETCH_STUDENTS:
+      return {
+        ...state,
+      };
+    case StudentActions.FILTER_STUDENTS:
+      return {
+        ...state,
+      };
     case StudentActions.ADD_STUDENT:
       return {
         ...state,
         newSchool: action.payload,
       };
-
     case StudentActions.UPDATE_STUDENT:
       const updatedStudent = {
         ...action.payload,
       };
-
       return {
         ...state,
         updatedStudent: updatedStudent,
@@ -61,7 +67,6 @@ export function studentReducer(
       const existingStudent = {
         ...action.payload,
       };
-
       return {
         ...state,
         searchedStudent: existingStudent,

@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { Actions, Effect, ofType } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
-import { HttpClient } from "@angular/common/http";
+import { HttpClient, HttpParams } from "@angular/common/http";
 import { switchMap, map, withLatestFrom } from "rxjs/operators";
 
 import * as StudentActions from "./student.actions";
@@ -12,6 +12,11 @@ export interface searchResponse {
   data: {
     existingStud: Student[];
   };
+  message: string;
+}
+
+export interface studentResponse {
+  data: [];
   message: string;
 }
 
@@ -28,6 +33,54 @@ export class StudentEffects {
         std: addAction.payload.std,
         dob: addAction.payload.dob,
       });
+    })
+  );
+
+  @Effect()
+  fetchStudents = this.actions$.pipe(
+    ofType(StudentActions.FETCH_STUDENTS),
+    switchMap((actionData: StudentActions.FetchStudents) => {
+      let url = "http://localhost:3000/students/findAll";
+      const {
+        fieldName,
+        fieldValue,
+        pageNumber,
+        limit,
+        keyword,
+        sortBy,
+        sortOrder,
+      } = actionData.payload;
+      let searchParams = new HttpParams();
+      searchParams = searchParams.append("fieldName", `${fieldName}`);
+      if (fieldName && fieldValue) {
+        searchParams = searchParams.append("fieldName", `${fieldName}`);
+        searchParams = searchParams.append("fieldValue", `${fieldValue}`);
+      }
+      if (pageNumber && limit) {
+        searchParams = searchParams.append("pageNumber", `${pageNumber}`);
+        searchParams = searchParams.append("limit", `${limit}`);
+      }
+      if (keyword) {
+        searchParams = searchParams.append("keyword", `${keyword}`);
+      }
+      if (sortBy && sortOrder) {
+        searchParams = searchParams.append("sortBy", `${sortBy}`);
+        searchParams = searchParams.append("sortOrder", `${sortOrder}`);
+      } else if (sortOrder) {
+        searchParams = searchParams.append("sortBy", `${sortBy}`);
+      }
+
+      const students = this.http.get<studentResponse>(url, {
+        params: searchParams,
+      });
+      console.log("students from switchMap from effect", students);
+
+      return students;
+    }),
+    map((res) => {
+      console.log("response from fetch students effect", res);
+
+      return new StudentActions.SetStudentss(res.data);
     })
   );
 

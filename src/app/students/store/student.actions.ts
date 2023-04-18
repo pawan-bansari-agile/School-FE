@@ -11,6 +11,7 @@ export const AUTO_FETCH = "[Student] Auto Fetch";
 export const SET_STUDENTSS = "[Students] Set Studentss";
 export const SEARCH_COMPLETE = "[Student] Search Complete";
 export const ADD_STUDENT = "[Student] Add Student";
+export const FILTER_STUDENTS = "[Student] Filter Student";
 
 export class AddStudent implements Action {
   readonly type = ADD_STUDENT;
@@ -38,7 +39,32 @@ export class SetStudentss implements Action {
 
 export class FetchStudents implements Action {
   readonly type = FETCH_STUDENTS;
-  constructor(public payload: Student[]) {}
+  constructor(
+    public payload: {
+      fieldName: string;
+      fieldValue: string;
+      pageNumber: string;
+      limit: string;
+      keyword: string;
+      sortBy: string;
+      sortOrder: string;
+    }
+  ) {}
+}
+
+export class FilterStudents implements Action {
+  readonly type = FILTER_STUDENTS;
+  constructor(
+    public payload: {
+      fieldName: string;
+      fieldValue: string;
+      pageNumber: string;
+      limit: string;
+      keyword: string;
+      sortBy: string;
+      sortOrder: string;
+    }
+  ) {}
 }
 
 export class UpdateStudent implements Action {
@@ -88,4 +114,5 @@ export type StudentActions =
   | FindOneStudent
   | AutoFetch
   | SearchComplete
-  | AddStudent;
+  | AddStudent
+  | FilterStudents;

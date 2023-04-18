@@ -25,7 +25,7 @@ export class StudentsComponent implements OnInit {
     private store: Store<fromApp.AppState> // private router: Router
   ) {}
 
-  students$: Observable<Student[]>;
+  students$: Student[];
 
   students: Student[] = [];
 
@@ -35,6 +35,8 @@ export class StudentsComponent implements OnInit {
 
   userSub: Subscription;
 
+  studentsSub: Subscription;
+
   userRole: string;
 
   @Output() studSelectionChange = new EventEmitter<Student>();
@@ -43,25 +45,56 @@ export class StudentsComponent implements OnInit {
 
   createStud: boolean;
 
+  onFilter: boolean = false;
+
   ngOnInit() {
     this.userSub = this.store
       .select("auth")
       .pipe(
         map((authState) => {
           this.userRole = authState.school ? authState.school.role : "";
+          if (authState.user) {
+            this.userRole = authState.user.role;
+          }
         })
       )
       .subscribe();
 
-    this.students$ = this.http
-      .get<studentResponse>("http://localhost:3000/students/findAll")
+    this.store.dispatch(
+      new StudentActions.FetchStudents({
+        fieldName: "",
+        fieldValue: "",
+        pageNumber: "",
+        limit: "",
+        keyword: "",
+        sortBy: "",
+        sortOrder: "",
+      })
+    );
+
+    this.studentsSub = this.store
+      .select("students")
       .pipe(
-        map((res) => {
-          this.students = res.data;
-          new StudentActions.SetStudentss(res.data);
-          return res.data;
+        map((studentState) => {
+          console.log(
+            "students from oninit in component",
+            studentState.students
+          );
+
+          this.students$ = studentState.students;
         })
-      );
+      )
+      .subscribe();
+
+    // this.http
+    //   .get<studentResponse>("http://localhost:3000/students/findAll")
+    //   .pipe(
+    //     map((res) => {
+    //       this.students = res.data;
+    //       new StudentActions.SetStudentss(res.data);
+    //       return res.data;
+    //     })
+    //   );
   }
 
   selectSchool(student: Student): void {
@@ -106,5 +139,24 @@ export class StudentsComponent implements OnInit {
     };
     this.store.dispatch(new StudentActions.AddStudent(payload));
     location.reload();
+  }
+
+  onFilters() {
+    this.onFilter = !this.onFilter;
+  }
+
+  onFilterSelected(form: NgForm) {
+    console.log("selections from onFilterSelected", form.value);
+    this.store.dispatch(
+      new StudentActions.FetchStudents({
+        fieldName: form.value.fieldName ? form.value.fieldName : "",
+        fieldValue: form.value.fieldValue ? form.value.fieldValue : "",
+        pageNumber: form.value.pageNumber ? form.value.pageNumber : "",
+        limit: form.value.limit ? form.value.limit : "",
+        keyword: form.value.keyword ? form.value.keyword : "",
+        sortBy: form.value.sortBy ? form.value.sortBy : "",
+        sortOrder: form.value.sortOrder ? form.value.sortOrder : "",
+      })
+    );
   }
 }
