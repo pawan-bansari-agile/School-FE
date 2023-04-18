@@ -52,7 +52,6 @@ export class StudentsComponent implements OnInit {
         })
       )
       .subscribe();
-    console.log("from school component oninit", this.userRole);
 
     this.students$ = this.http
       .get<studentResponse>("http://localhost:3000/students/findAll")
@@ -98,7 +97,6 @@ export class StudentsComponent implements OnInit {
   }
 
   onSubmit(form: NgForm) {
-    console.log("from on submit function", form);
     const payload = {
       name: form.value.name,
       parentNumber: form.value.parentNumber.toString(),
