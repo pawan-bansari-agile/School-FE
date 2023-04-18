@@ -1,10 +1,10 @@
-      <h3>{{ selectedSchool.name }}</h3>
-      <h4>{{ selectedSchool.email }}</h4>
-      <p>{{ selectedSchool.address }}</p>
-      <p>{{ selectedSchool.zipCode }}</p>
-      <p>{{ selectedSchool.city }}</p>
-      <p>{{ selectedSchool.state }}</p>
-      <p>{{ selectedSchool.country }}</p>
+      <h3>Name: {{ selectedSchool.name }}</h3>
+      <h4>Email: {{ selectedSchool.email }}</h4>
+      <p>Address: {{ selectedSchool.address }}</p>
+      <p>ZipCode: {{ selectedSchool.zipCode }}</p>
+      <p>City: {{ selectedSchool.city }}</p>
+      <p>State: {{ selectedSchool.state }}</p>
+      <p>Country: {{ selectedSchool.country }}</p>
       <div *ngIf="schoolId == selectedSchool._id">
         <form #updateForm="ngForm" (ngSubmit)="onSubmit(updateForm)">
           <div class="form-group">
@@ -73,7 +73,7 @@
               type="text"
               class="form-control"
               id="country"
-              [(ngModel)]="selectedSchool.name"
+              [(ngModel)]="selectedSchool.country"
               name="country"
             >
           </div>

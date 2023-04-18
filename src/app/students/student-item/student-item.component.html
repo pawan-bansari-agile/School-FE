@@ -1,10 +1,10 @@
-      <h3>{{ selectedStudent.name }}</h3>
-      <p>{{ selectedStudent.address }}</p>
-      <h4>{{ selectedStudent.parentNumber }}</h4>
-      <h4>{{ selectedStudent.std }}</h4>
-      <h4>{{ selectedStudent.dob }}</h4>
-      <h4>{{ selectedStudent.status }}</h4>
-      <h4>{{ selectedStudent.deleted }}</h4>
+      <h3>Name: {{ selectedStudent.name }}</h3>
+      <p>Address: {{ selectedStudent.address }}</p>
+      <h4>Parent Number:{{ selectedStudent.parentNumber }}</h4>
+      <h4>Standard: {{ selectedStudent.std }}</h4>
+      <h4>Birth Date: {{ selectedStudent.dob }}</h4>
+      <h4>Status: {{ selectedStudent.status }}</h4>
+      <h4>Deleted: {{ selectedStudent.deleted }}</h4>
       <div *ngIf="schoolId == selectedStudent.school">
         <form #updateForm="ngForm" (ngSubmit)="onSubmit(updateForm)">
           <div class="form-group">
@@ -68,5 +68,6 @@
             >
           </div>
           <button type="submit" class="btn btn-primary" [disabled]="!updateForm.valid" *ngIf="schoolId == selectedStudent.school">Update</button>
+          <button type="button" class="btn btn-danger" (click)="onDelete(selectedStudent)">Delete</button>
         </form>
       </div>

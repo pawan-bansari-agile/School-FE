@@ -60,7 +60,6 @@ export class UpdateStudent implements Action {
 
 export class DeleteStudent implements Action {
   readonly type = DELETE_STUDENT;
-
   constructor(public payload: string) {}
 }
 

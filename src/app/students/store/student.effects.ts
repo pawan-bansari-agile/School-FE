@@ -17,7 +17,7 @@ export interface searchResponse {
 
 @Injectable()
 export class StudentEffects {
-  @Effect()
+  @Effect({ dispatch: false })
   addStudent = this.actions$.pipe(
     ofType(StudentActions.ADD_STUDENT),
     switchMap((addAction: StudentActions.AddStudent) => {
@@ -72,6 +72,16 @@ export class StudentEffects {
     }),
     map((school) => {
       return new StudentActions.SearchComplete(school.data.existingStud[0]);
+    })
+  );
+
+  @Effect({ dispatch: false })
+  deleteStudent = this.actions$.pipe(
+    ofType(StudentActions.DELETE_STUDENT),
+    switchMap((action: any) => {
+      return this.http.delete(
+        `http://localhost:3000/students/delete/${action.payload}`
+      );
     })
   );
 

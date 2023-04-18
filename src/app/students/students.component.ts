@@ -7,6 +7,7 @@ import * as fromApp from "../store/app.reducer";
 import { Student } from "./student.model";
 import * as StudentActions from "./store/student.actions";
 import { NgForm } from "@angular/forms";
+// import { Router } from "@angular/router";
 
 export interface studentResponse {
   data: [];
@@ -21,7 +22,7 @@ export interface studentResponse {
 export class StudentsComponent implements OnInit {
   constructor(
     private http: HttpClient,
-    private store: Store<fromApp.AppState>
+    private store: Store<fromApp.AppState> // private router: Router
   ) {}
 
   students$: Observable<Student[]>;
@@ -32,11 +33,27 @@ export class StudentsComponent implements OnInit {
 
   selectedStudent: Subscription;
 
+  userSub: Subscription;
+
+  userRole: string;
+
   @Output() studSelectionChange = new EventEmitter<Student>();
 
   searchedStudent: Student | null = null;
 
+  createStud: boolean;
+
   ngOnInit() {
+    this.userSub = this.store
+      .select("auth")
+      .pipe(
+        map((authState) => {
+          this.userRole = authState.school ? authState.school.role : "";
+        })
+      )
+      .subscribe();
+    console.log("from school component oninit", this.userRole);
+
     this.students$ = this.http
       .get<studentResponse>("http://localhost:3000/students/findAll")
       .pipe(
@@ -70,5 +87,26 @@ export class StudentsComponent implements OnInit {
       .subscribe((searchedStudent) => {
         this.searchedStudent = searchedStudent;
       });
+  }
+
+  onNewStudent() {
+    this.createStud = true;
+  }
+
+  onCancel() {
+    this.createStud = false;
+  }
+
+  onSubmit(form: NgForm) {
+    console.log("from on submit function", form);
+    const payload = {
+      name: form.value.name,
+      parentNumber: form.value.parentNumber.toString(),
+      address: form.value.address,
+      std: form.value.std,
+      dob: form.value.dob,
+    };
+    this.store.dispatch(new StudentActions.AddStudent(payload));
+    location.reload();
   }
 }

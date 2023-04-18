@@ -19,16 +19,87 @@
     </form>
     <div *ngIf="!!searchedStudent" class="card">
       <div class="card-body">
-        <h4 class="card-title">{{ searchedStudent.name }}</h4>
-        <h6 class="card-subtitle mb-2 text-muted">{{ searchedStudent.parentNumber }}</h6>
-        <p class="card-text">{{ searchedStudent.address }}</p>
-        <p class="card-text">{{ searchedStudent.std }}</p>
-        <p class="card-text">{{ searchedStudent.dob }}</p>
-        <p class="card-text">{{ searchedStudent.status }}</p>
+        <h4 class="card-title">Name: {{ searchedStudent.name }}</h4>
+        <h6 class="card-subtitle mb-2 text-muted">Parent Number: {{ searchedStudent.parentNumber }}</h6>
+        <p class="card-text">Address: {{ searchedStudent.address }}</p>
+        <p class="card-text">Standard: {{ searchedStudent.std }}</p>
+        <p class="card-text">Birth Date: {{ searchedStudent.dob }}</p>
+        <p class="card-text">Status: {{ searchedStudent.status }}</p>
       </div>
     </div>
 
     <hr>
+    <div *ngIf="userRole === 'School'">
+      <button
+        class="btn btn-primary"
+        type="button"
+        (click)="onNewStudent()"
+      >
+        Add New Student
+      </button>
+      <hr>
+    </div>
+    <div  *ngIf="!!createStud">
+      <form #createForm="ngForm" (ngSubmit)="onSubmit(createForm)">
+        <div class="form-group">
+          <label for="name">Name</label>
+          <input
+            type="text"
+            class="form-control"
+            id="name"
+            ngModel
+            name="name"
+          >
+        </div>
+        <div class="form-group">
+          <label for="parentNumber">Parents Number</label>
+          <input
+            type="number"
+            class="form-control"
+            id="parentNumber"
+            ngModel
+            name="parentNumber"
+          >
+        </div>
+        <div class="form-group">
+          <label for="address">Address</label>
+          <input
+            type="text"
+            class="form-control"
+            id="address"
+            ngModel
+            name="address"
+          >
+        </div>
+        <div class="form-group">
+          <label for="std">Standard</label>
+          <input
+            type="text"
+            class="form-control"
+            id="std"
+            ngModel
+            name="std"
+          >
+        </div>
+        <div class="form-group">
+          <label for="dob">Date of birth</label>
+          <input
+            type="Date"
+            class="form-control"
+            id="dob"
+            ngModel
+            name="dob"
+          >
+        </div>
+        <div class="form-group">
+          <div class="d-flex justify-content-between align-items-center">
+              <button type="submit" class="btn btn-primary" [disabled]="!createForm.valid">Add</button>
+              <button type="button" class="btn btn-danger" (click)="onCancel()">Cancel</button>
+          </div>
+        </div>
+      </form>
+      <hr>
+    </div>
     <ul class="list-group">
       <li class="list-group-item" style="cursor: pointer;" *ngFor="let student of students$ | async" (click)="selectSchool(student)">
         {{ student.name }}
@@ -40,7 +111,7 @@
     <h2>Student Details</h2>
     <app-student-item *ngIf="selectedStudent$" [selectedStudent]="selectedStudent$"></app-student-item>
     <div *ngIf="!selectedStudent$">
-      <p>No school selected.</p>
+      <p>No Student selected.</p>
     </div>
   </div>
 </div>

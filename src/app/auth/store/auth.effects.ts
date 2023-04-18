@@ -515,6 +515,7 @@ export class AuthEffects {
       this.authService.clearLogoutTimer();
       localStorage.removeItem("userData");
       localStorage.removeItem("selectedSchool");
+      localStorage.removeItem("selectedStudent");
       this.router.navigate(["/auth"]);
     })
   );
@@ -526,6 +527,7 @@ export class AuthEffects {
       this.authService.clearLogoutTimer();
       localStorage.removeItem("schoolData");
       localStorage.removeItem("selectedSchool");
+      localStorage.removeItem("selectedStudent");
       this.router.navigate(["/auth"]);
     })
   );

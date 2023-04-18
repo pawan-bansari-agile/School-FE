@@ -55,5 +55,12 @@ export class StudentItemComponent implements OnInit {
     };
 
     this.store.dispatch(new StudentActions.UpdateStudent(payload));
+    location.reload();
+  }
+
+  onDelete(student) {
+    console.log("student from on delete", student);
+    this.store.dispatch(new StudentActions.DeleteStudent(student._id));
+    location.reload();
   }
 }

@@ -20,13 +20,13 @@
     </form>
     <div *ngIf="!!searchedSchool" class="card">
       <div class="card-body">
-        <h4 class="card-title">{{ searchedSchool.name }}</h4>
-        <h6 class="card-subtitle mb-2 text-muted">{{ searchedSchool.email }}</h6>
-        <p class="card-text">{{ searchedSchool.address }}</p>
-        <p class="card-text">{{ searchedSchool.zipCode }}</p>
-        <p class="card-text">{{ searchedSchool.city }}</p>
-        <p class="card-text">{{ searchedSchool.state }}</p>
-        <p class="card-text">{{ searchedSchool.country }}</p>
+        <h4 class="card-title">Name: {{ searchedSchool.name }}</h4>
+        <h6 class="card-subtitle mb-2 text-muted">Email: {{ searchedSchool.email }}</h6>
+        <p class="card-text">Address: {{ searchedSchool.address }}</p>
+        <p class="card-text">ZipCode: {{ searchedSchool.zipCode }}</p>
+        <p class="card-text">City: {{ searchedSchool.city }}</p>
+        <p class="card-text">State: {{ searchedSchool.state }}</p>
+        <p class="card-text">Country: {{ searchedSchool.country }}</p>
       </div>
     </div>
 

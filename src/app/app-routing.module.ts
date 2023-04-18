@@ -2,6 +2,7 @@ import { NgModule } from "@angular/core";
 import { Routes, RouterModule, PreloadAllModules } from "@angular/router";
 
 const appRoutes: Routes = [
+  { path: "", redirectTo: "/auth", pathMatch: "full" },
   {
     path: "auth",
     loadChildren: "./auth/auth.module#AuthModule",

@@ -52,9 +52,6 @@ export function studentReducer(
     case StudentActions.DELETE_STUDENT:
       return {
         ...state,
-        students: state.students.filter((school, index) => {
-          return school._id !== action.payload;
-        }),
       };
     case StudentActions.FIND_ONE_STUDENT:
       return {
