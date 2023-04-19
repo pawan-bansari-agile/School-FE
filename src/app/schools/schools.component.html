@@ -77,8 +77,9 @@
             type="number"
             class="form-control"
             id="pageNumber"
-            ngModel
+            [(ngModel)]="pageNumber"
             name="pageNumber"
+            required
             >
           </div>
 
@@ -88,8 +89,9 @@
             type="number"
             class="form-control"
             id="limit"
-            ngModel
+            [(ngModel)]="limit"
             name="limit"
+            [disabled]="!pageNumber"
             >
           </div>
 
