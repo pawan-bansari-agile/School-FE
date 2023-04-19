@@ -50,8 +50,9 @@ export class StudentEffects {
         sortBy,
         sortOrder,
       } = actionData.payload;
+
       let searchParams = new HttpParams();
-      searchParams = searchParams.append("fieldName", `${fieldName}`);
+      // searchParams = searchParams.append("fieldName", `${fieldName}`);
       if (fieldName && fieldValue) {
         searchParams = searchParams.append("fieldName", `${fieldName}`);
         searchParams = searchParams.append("fieldValue", `${fieldValue}`);
@@ -63,24 +64,22 @@ export class StudentEffects {
       if (keyword) {
         searchParams = searchParams.append("keyword", `${keyword}`);
       }
-      if (sortBy && sortOrder) {
-        searchParams = searchParams.append("sortBy", `${sortBy}`);
-        searchParams = searchParams.append("sortOrder", `${sortOrder}`);
-      } else if (sortOrder) {
-        searchParams = searchParams.append("sortBy", `${sortBy}`);
+      if (sortBy || sortOrder) {
+        if (sortBy && sortOrder) {
+          searchParams = searchParams.append("sortBy", `${sortBy}`);
+          searchParams = searchParams.append("sortOrder", `${sortOrder}`);
+        } else if (sortBy) {
+          searchParams = searchParams.append("sortBy", `${sortBy}`);
+        } else if (sortOrder) {
+          searchParams = searchParams.append("sortOrder", `${sortOrder}`);
+        }
       }
 
-      const students = this.http.get<studentResponse>(url, {
-        params: searchParams,
-      });
-      console.log("students from switchMap from effect", students);
-
-      return students;
-    }),
-    map((res) => {
-      console.log("response from fetch students effect", res);
-
-      return new StudentActions.SetStudentss(res.data);
+      return this.http.get<studentResponse>(url, { params: searchParams }).pipe(
+        map((res) => {
+          return new StudentActions.SetStudentss(res.data);
+        })
+      );
     })
   );
 

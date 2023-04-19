@@ -47,6 +47,7 @@
         Filters
       </button>
     </div>
+    <hr>
 
     <div  *ngIf="!!createStud">
       <form #createForm="ngForm" (ngSubmit)="onSubmit(createForm)">
@@ -111,7 +112,7 @@
     </div>
     <div *ngIf="!!onFilter">
         <div class="container-fluid">
-          <form #filterForm="ngForm" (ngSubmit)="onFilterSelected(filterForm)">
+          <form #filterForm="ngForm" (ngSubmit)="fetchStudents(filterForm)">
             <div class="col-md-4">
               <label for="fieldName" class="form-label">Field Name:</label>
               <input
@@ -130,6 +131,17 @@
               id="fieldValue"
               ngModel
               name="fieldValue"
+              >
+            </div>
+
+            <div class="col-md-4">
+              <label for="pageNumber" class="form-label">Page Number:</label>
+              <input
+              type="number"
+              class="form-control"
+              id="pageNumber"
+              ngModel
+              name="pageNumber"
               >
             </div>
 
@@ -180,8 +192,9 @@
           </form>
         </div>
 
+        <hr>
     </div>
-    <hr>
+    <button class="btn btn-primary" type="button" (click)="fetchStudents()">Students List</button>
     <ul class="list-group">
       <li class="list-group-item" style="cursor: pointer;" *ngFor="let student of students$ " (click)="selectSchool(student)">
         {{ student.name }}

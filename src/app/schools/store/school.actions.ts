@@ -33,7 +33,7 @@ export class FetchSchools implements Action {
       keyword: string;
       sortBy: string;
       sortOrder: number;
-      data: School[];
+      // data: School[];
     }
   ) {}
 }

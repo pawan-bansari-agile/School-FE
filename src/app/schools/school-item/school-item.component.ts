@@ -57,5 +57,6 @@ export class SchoolItemComponent implements OnInit {
     };
 
     this.store.dispatch(new SchoolActions.UpdateSchool(payload));
+    location.reload();
   }
 }

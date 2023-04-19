@@ -31,12 +31,107 @@
     </div>
 
     <hr>
+    <div>
+      <button
+        class="btn btn-primary"
+        type="button"
+        (click)="onFilters()"
+      >
+        Filters
+      </button>
+      <hr>
+    </div>
+    <div *ngIf="!!onFilter">
+      <div class="container-fluid">
+        <form #filterForm="ngForm" (ngSubmit)="fetchSchools(filterForm)">
+          <div class="col-md-4">
+            <label for="fieldName" class="form-label">Field Name:</label>
+            <input
+            type="text"
+            class="form-control"
+            id="fieldName"
+            ngModel
+            name="fieldName">
+          </div>
+
+          <div class="col-md-4">
+            <label for="fieldValue" class="form-label">Field Value:</label>
+            <input
+            type="text"
+            class="form-control"
+            id="fieldValue"
+            ngModel
+            name="fieldValue"
+            >
+          </div>
+
+          <div class="col-md-4">
+            <label for="pageNumber" class="form-label">Page Number:</label>
+            <input
+            type="number"
+            class="form-control"
+            id="pageNumber"
+            ngModel
+            name="pageNumber"
+            >
+          </div>
+
+          <div class="col-md-4">
+            <label for="limit" class="form-label">Entries/page:</label>
+            <input
+            type="number"
+            class="form-control"
+            id="limit"
+            ngModel
+            name="limit"
+            >
+          </div>
+
+          <div class="col-md-4">
+            <label for="keyword" class="form-label">Keyword:</label>
+            <input
+            type="text"
+            class="form-control"
+            id="keyword"
+            ngModel
+            name="keyword"
+            >
+          </div>
+
+          <div class="col-md-4">
+            <label for="sortBy" class="form-label">Sort By:</label>
+            <input
+            type="text"
+            class="form-control"
+            id="sortBy"
+            ngModel
+            name="sortBy"
+            >
+          </div>
+
+          <div class="col-md-4">
+            <label for="sortOrder" class="form-label">Sort Order:</label>
+            <input
+            type="text"
+            class="form-control"
+            id="sortOrder"
+            ngModel
+            name="sortOrder"
+            >
+          </div>
+          <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+      </div>
+
+      <hr>
+  </div>
+  <button class="btn btn-primary" type="button" (click)="fetchSchools()">Schools List</button>
     <ul class="list-group">
-      <li class="list-group-item" style="cursor: pointer;" *ngFor="let school of schools$ | async" (click)="selectSchool(school)">
+      <li class="list-group-item" style="cursor: pointer;" *ngFor="let school of schools$" (click)="selectSchool(school)">
         {{ school.name }}
       </li>
     </ul>
-    <p *ngIf="(schools$ | async)?.length === 0" class="text-muted">No schools available.</p>
+    <p *ngIf="schools$?.length === 0" class="text-muted">No schools available.</p>
   </div>
   <div class="school-details">
     <h2>School Details</h2>

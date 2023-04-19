@@ -55,6 +55,17 @@ export class StudentItemComponent implements OnInit {
     };
 
     this.store.dispatch(new StudentActions.UpdateStudent(payload));
+    // this.store.dispatch(
+    //   new StudentActions.FetchStudents({
+    //     fieldName: "",
+    //     fieldValue: "",
+    //     pageNumber: "",
+    //     limit: "",
+    //     sortBy: "",
+    //     sortOrder: "",
+    //     keyword: "",
+    //   })
+    // );
     location.reload();
   }
 

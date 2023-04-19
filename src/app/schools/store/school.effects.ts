@@ -1,17 +1,22 @@
 import { Injectable } from "@angular/core";
 import { Actions, Effect, ofType } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
-import { HttpClient } from "@angular/common/http";
+import { HttpClient, HttpParams } from "@angular/common/http";
 import { switchMap, map, withLatestFrom } from "rxjs/operators";
 
 import * as SchoolActions from "./school.actions";
 import { School, UpdatedSchool } from "../../auth/school.model";
 import * as fromApp from "../../store/app.reducer";
 
-export interface searchResponse {
+export interface searchOne {
   data: {
     existingSchool: School;
   };
+  message: string;
+}
+
+export interface searchResponse {
+  data: [];
   message: string;
 }
 
@@ -20,32 +25,47 @@ export class SchoolEffects {
   @Effect()
   fetchSchools = this.actions$.pipe(
     ofType(SchoolActions.FETCH_SCHOOLS),
-    switchMap((fetchAction: SchoolActions.FetchSchools) => {
-      let url: string = "http://localhost:3000/school/findAll";
-      if (fetchAction.payload.fieldName && fetchAction.payload.fieldValue) {
-        url = `http://localhost:3000/school/findAll?${fetchAction.payload.fieldName}=${fetchAction.payload.fieldValue}`;
+    switchMap((actionData: SchoolActions.FetchSchools) => {
+      let url = "http://localhost:3000/school/findAll";
+      const {
+        fieldName,
+        fieldValue,
+        pageNumber,
+        limit,
+        keyword,
+        sortBy,
+        sortOrder,
+      } = actionData.payload;
+
+      let searchParams = new HttpParams();
+      // searchParams = searchParams.append("fieldName", `${fieldName}`);
+      if (fieldName && fieldValue) {
+        searchParams = searchParams.append("fieldName", `${fieldName}`);
+        searchParams = searchParams.append("fieldValue", `${fieldValue}`);
       }
-      if (fetchAction.payload.pageNumber || fetchAction.payload.limit) {
-        url = `http://localhost:3000/school/findAll?pageNumber=${fetchAction.payload.pageNumber}&limit=${fetchAction.payload.limit}`;
+      if (pageNumber && limit) {
+        searchParams = searchParams.append("pageNumber", `${pageNumber}`);
+        searchParams = searchParams.append("limit", `${limit}`);
       }
-      if (fetchAction.payload.keyword) {
-        url = `http://localhost:3000/school/findAll?keyword=${fetchAction.payload.keyword}`;
+      if (keyword) {
+        searchParams = searchParams.append("keyword", `${keyword}`);
       }
-      if (fetchAction.payload.sortBy || fetchAction.payload.sortOrder) {
-        url = `http://localhost:3000/school/findAll?sortBy=${fetchAction.payload.sortBy}&${fetchAction.payload.sortOrder}`;
+      if (sortBy || sortOrder) {
+        if (sortBy && sortOrder) {
+          searchParams = searchParams.append("sortBy", `${sortBy}`);
+          searchParams = searchParams.append("sortOrder", `${sortOrder}`);
+        } else if (sortBy) {
+          searchParams = searchParams.append("sortBy", `${sortBy}`);
+        } else if (sortOrder) {
+          searchParams = searchParams.append("sortOrder", `${sortOrder}`);
+        }
       }
-      return this.http.get<School[]>(url);
-    }),
-    map((schools) => {
-      return schools.map((school) => {
-        return {
-          ...school,
-        };
-      });
-    }),
-    map((schools) => {
-      localStorage.setItem("schools", JSON.stringify(schools));
-      return new SchoolActions.SetSchoolss(schools);
+
+      return this.http.get<searchResponse>(url, { params: searchParams }).pipe(
+        map((res) => {
+          return new SchoolActions.SetSchoolss(res.data);
+        })
+      );
     })
   );
 
@@ -85,7 +105,7 @@ export class SchoolEffects {
   findOneSchool = this.actions$.pipe(
     ofType(SchoolActions.FIND_ONE_SCHOOL),
     switchMap((action: any) => {
-      return this.http.get<searchResponse>(
+      return this.http.get<searchOne>(
         `http://localhost:3000/school/findOne/${action.payload}`
       );
     }),

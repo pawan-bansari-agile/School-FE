@@ -23,7 +23,7 @@ export function schoolReducer(
     case SchoolActions.FETCH_SCHOOLS:
       return {
         ...state,
-        schools: action.payload.data,
+        // schools: action.payload.data,
       };
     case SchoolActions.SET_SCHOOLS:
       return {

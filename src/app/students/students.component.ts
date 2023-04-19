@@ -48,20 +48,25 @@ export class StudentsComponent implements OnInit {
   onFilter: boolean = false;
 
   ngOnInit() {
-    this.userSub = this.store
-      .select("auth")
-      .pipe(
-        map((authState) => {
-          this.userRole = authState.school ? authState.school.role : "";
-          if (authState.user) {
-            this.userRole = authState.user.role;
-          }
-        })
-      )
-      .subscribe();
+    this.userSub = this.store.select("auth").subscribe((authState) => {
+      this.userRole = authState.school ? authState.school.role : "";
+      if (authState.user) {
+        this.userRole = authState.user.role;
+      }
+    });
 
-    this.store.dispatch(
-      new StudentActions.FetchStudents({
+    this.studentsSub = this.store
+      .select("students")
+
+      .subscribe((studentState) => {
+        this.students$ = studentState.students;
+      });
+  }
+
+  fetchStudents(form: NgForm) {
+    let filterParams;
+    if (!form) {
+      filterParams = {
         fieldName: "",
         fieldValue: "",
         pageNumber: "",
@@ -69,36 +74,24 @@ export class StudentsComponent implements OnInit {
         keyword: "",
         sortBy: "",
         sortOrder: "",
-      })
-    );
+      };
+    } else {
+      filterParams = {
+        fieldName: form.value.fieldName || "",
+        fieldValue: form.value.fieldValue || "",
+        pageNumber: form.value.pageNumber || "",
+        limit: form.value.limit ? form.value.limit.toString() : "",
+        keyword: form.value.keyword || "",
+        sortBy: form.value.sortBy || "",
+        sortOrder: form.value.sortOrder || "",
+      };
+    }
 
-    this.studentsSub = this.store
-      .select("students")
-      .pipe(
-        map((studentState) => {
-          console.log(
-            "students from oninit in component",
-            studentState.students
-          );
-
-          this.students$ = studentState.students;
-        })
-      )
-      .subscribe();
-
-    // this.http
-    //   .get<studentResponse>("http://localhost:3000/students/findAll")
-    //   .pipe(
-    //     map((res) => {
-    //       this.students = res.data;
-    //       new StudentActions.SetStudentss(res.data);
-    //       return res.data;
-    //     })
-    //   );
+    this.store.dispatch(new StudentActions.FetchStudents(filterParams));
+    this.onFilter = false;
   }
 
   selectSchool(student: Student): void {
-    this.store.dispatch(new StudentActions.SetStudents(student));
     this.selectedStudent$ = student;
     this.studSelectionChange.emit(student);
   }
@@ -138,25 +131,12 @@ export class StudentsComponent implements OnInit {
       dob: form.value.dob,
     };
     this.store.dispatch(new StudentActions.AddStudent(payload));
-    location.reload();
+    // location.reload();
+    this.fetchStudents(form);
+    this.createStud = false;
   }
 
   onFilters() {
     this.onFilter = !this.onFilter;
-  }
-
-  onFilterSelected(form: NgForm) {
-    console.log("selections from onFilterSelected", form.value);
-    this.store.dispatch(
-      new StudentActions.FetchStudents({
-        fieldName: form.value.fieldName ? form.value.fieldName : "",
-        fieldValue: form.value.fieldValue ? form.value.fieldValue : "",
-        pageNumber: form.value.pageNumber ? form.value.pageNumber : "",
-        limit: form.value.limit ? form.value.limit : "",
-        keyword: form.value.keyword ? form.value.keyword : "",
-        sortBy: form.value.sortBy ? form.value.sortBy : "",
-        sortOrder: form.value.sortOrder ? form.value.sortOrder : "",
-      })
-    );
   }
 }

@@ -24,7 +24,7 @@ export class SchoolsComponent implements OnInit {
     private store: Store<fromApp.AppState>
   ) {}
 
-  schools$: Observable<School[]>;
+  schools$: School[];
 
   schools: School[] = [];
 
@@ -32,27 +32,56 @@ export class SchoolsComponent implements OnInit {
 
   selectedSchool: Subscription;
 
+  schoolsSub: Subscription;
+
   @Output() selectionChange = new EventEmitter<School>();
 
   searchedSchool: School | null = null;
+
+  onFilter: boolean = false;
 
   role: string = "";
   schoolId: string = "";
 
   ngOnInit() {
-    this.schools$ = this.http
-      .get<schoolResponse>("http://localhost:3000/school/findAll")
-      .pipe(
-        map((res) => {
-          this.schools = res.data;
-          new SchoolActions.SetSchoolss(res.data);
-          return res.data;
-        })
-      );
+    this.schoolsSub = this.store
+      .select("schools")
+
+      .subscribe((schoolState) => {
+        this.schools$ = schoolState.schools;
+      });
+  }
+
+  fetchSchools(form: NgForm) {
+    let filterParams;
+    if (!form) {
+      filterParams = {
+        fieldName: "",
+        fieldValue: "",
+        pageNumber: "",
+        limit: "",
+        keyword: "",
+        sortBy: "",
+        sortOrder: "",
+      };
+    } else {
+      filterParams = {
+        fieldName: form.value.fieldName || "",
+        fieldValue: form.value.fieldValue || "",
+        pageNumber: form.value.pageNumber || "",
+        limit: form.value.limit ? form.value.limit.toString() : "",
+        keyword: form.value.keyword || "",
+        sortBy: form.value.sortBy || "",
+        sortOrder: form.value.sortOrder || "",
+      };
+    }
+
+    this.store.dispatch(new SchoolActions.FetchSchools(filterParams));
+    this.onFilter = false;
   }
 
   selectSchool(school: School): void {
-    this.store.dispatch(new SchoolActions.SetSchools(school));
+    // this.store.dispatch(new SchoolActions.SetSchools(school));
     this.selectedSchool$ = school;
     this.selectionChange.emit(school);
   }
@@ -74,5 +103,9 @@ export class SchoolsComponent implements OnInit {
       .subscribe((searchedSchool) => {
         this.searchedSchool = searchedSchool;
       });
+  }
+
+  onFilters() {
+    this.onFilter = !this.onFilter;
   }
 }
