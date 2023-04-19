@@ -45,23 +45,29 @@
       <div class="container-fluid">
         <form #filterForm="ngForm" (ngSubmit)="fetchSchools(filterForm)">
           <div class="col-md-4">
-            <label for="fieldName" class="form-label">Field Name:</label>
-            <input
-            type="text"
-            class="form-control"
-            id="fieldName"
-            ngModel
-            name="fieldName">
+            <label for="citySelect" class="form-label">FilterBy:</label>
+            <select
+              class="form-control"
+              id="fieldName"
+              [(ngModel)]="fieldName"
+              name="fieldName"
+              required>
+              <option value="">-</option>
+              <option value="city">city</option>
+            </select>
           </div>
+
 
           <div class="col-md-4">
             <label for="fieldValue" class="form-label">Field Value:</label>
             <input
+            placeholder="Please enter exact matching name"
             type="text"
             class="form-control"
             id="fieldValue"
-            ngModel
+            [(ngModel)]="fieldValue"
             name="fieldValue"
+            [disabled]="!fieldName"
             >
           </div>
 
