@@ -55,6 +55,10 @@ export function studentReducer(
         ...state,
         updatedStudent: updatedStudent,
       };
+    case StudentActions.STATUS_UPDATE:
+      return {
+        ...state,
+      };
     case StudentActions.DELETE_STUDENT:
       return {
         ...state,

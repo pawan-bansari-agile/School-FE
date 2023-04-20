@@ -14,7 +14,9 @@
           ngModel
           name="name"
           required
+          #name="ngModel"
         />
+        <span class="help-block" *ngIf="name.touched && name.invalid">Please enter a valid name</span>
       </div>
       <div *ngIf="isLoginMode === 'SignUp as School'" class="form-group">
         <label for="address">Address</label>
@@ -25,7 +27,9 @@
           ngModel
           name="address"
           required
+          #address="ngModel"
         />
+        <span class="help-block" *ngIf="address.touched && address.invalid">Please enter a valid address</span>
       </div>
       <div *ngIf="isLoginMode === 'SignUp as School'" class="form-group">
         <label for="photo">Photo</label>
@@ -35,7 +39,9 @@
           class="form-control"
           ngModel
           name="photo"
+          #photo="ngModel"
         />
+        <span class="help-block" *ngIf="photo.touched">You can add the photo later!</span>
       </div>
       <div *ngIf="isLoginMode === 'SignUp as School'" class="form-group">
         <label for="zipCode">ZipCode</label>
@@ -47,7 +53,9 @@
           name="zipCode"
           required
           pattern="^\d{6}$"
+          #zipCode="ngModel"
         />
+        <span class="help-block" *ngIf="zipCode.touched && zipCode.invalid">Please enter a valid Zip Code!</span>
       </div>
       <div *ngIf="isLoginMode === 'SignUp as School'" class="form-group">
         <label for="city">City</label>
@@ -58,7 +66,9 @@
           ngModel
           name="city"
           required
+          #city="ngModel"
         />
+        <span class="help-block" *ngIf="city.touched && city.invalid">Please enter a valid City!</span>
       </div>
       <div *ngIf="isLoginMode === 'SignUp as School'" class="form-group">
         <label for="state">State</label>
@@ -69,7 +79,9 @@
           ngModel
           name="state"
           required
+          #state="ngModel"
         />
+        <span class="help-block" *ngIf="state.touched && state.invalid">Please enter a valid State!</span>
       </div>
       <div *ngIf="isLoginMode === 'SignUp as School'" class="form-group">
         <label for="country">Country</label>
@@ -80,7 +92,9 @@
           ngModel
           name="country"
           required
+          #country="ngModel"
         />
+        <span class="help-block" *ngIf="country.touched && country.invalid">Please enter a valid Country!</span>
       </div>
       <div *ngIf="isLoginMode === 'SignUp as User'" class="form-group">
         <label for="username">User Name</label>
@@ -91,7 +105,9 @@
           ngModel
           name="userName"
           required
+          #userName="ngModel"
         />
+        <span class="help-block" *ngIf="userName.touched && userName.invalid">Please enter a valid User Name!</span>
       </div>
       <div class="form-group">
         <label for="email">E-Mail</label>
@@ -103,7 +119,9 @@
           name="email"
           required
           email
+          #email="ngModel"
         />
+        <span class="help-block" *ngIf="email.touched && email.invalid">Please enter a valid Email!</span>
       </div>
       <div *ngIf="isLoginMode === 'Login as User' || isLoginMode === 'Login as School'" class="form-group">
         <label for="password">Password</label>
@@ -114,8 +132,9 @@
           ngModel
           name="password"
           required
-          minlength="6"
+          #password="ngModel"
         />
+        <span class="help-block" *ngIf="password.touched && password.invalid">Password is required!</span>
       </div>
       <div *ngIf="isLoginMode === 'SignUp as User'" class="form-group">
         <label for="role">Role</label>

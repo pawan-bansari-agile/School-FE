@@ -4,22 +4,23 @@ import {
   ViewChild,
   OnDestroy,
   OnInit,
-} from '@angular/core';
-import { NgForm } from '@angular/forms';
-import { Subscription } from 'rxjs';
-import { Store } from '@ngrx/store';
+} from "@angular/core";
+import { NgForm } from "@angular/forms";
+import { Subscription } from "rxjs";
+import { Store } from "@ngrx/store";
 
-import { AlertComponent } from '../shared/alert/alert.component';
-import { PlaceholderDirective } from '../shared/placeholder/placeholder.directive';
-import * as fromApp from '../store/app.reducer';
-import * as AuthActions from './store/auth.actions';
+import { AlertComponent } from "../shared/alert/alert.component";
+import { PlaceholderDirective } from "../shared/placeholder/placeholder.directive";
+import * as fromApp from "../store/app.reducer";
+import * as AuthActions from "./store/auth.actions";
 
 @Component({
-  selector: 'app-auth',
-  templateUrl: './auth.component.html',
+  selector: "app-auth",
+  templateUrl: "./auth.component.html",
+  styleUrls: ["./auth.component.css"],
 })
 export class AuthComponent implements OnInit, OnDestroy {
-  isLoginMode = 'Login as User';
+  isLoginMode = "Login as User";
   isLoading = false;
   error: string = null;
   @ViewChild(PlaceholderDirective, { static: false })
@@ -30,11 +31,11 @@ export class AuthComponent implements OnInit, OnDestroy {
 
   constructor(
     private componentFactoryResolver: ComponentFactoryResolver,
-    private store: Store<fromApp.AppState>,
+    private store: Store<fromApp.AppState>
   ) {}
 
   ngOnInit() {
-    this.storeSub = this.store.select('auth').subscribe((authState) => {
+    this.storeSub = this.store.select("auth").subscribe((authState) => {
       this.isLoading = authState.loading;
       this.error = authState.authError;
       if (this.error) {
@@ -52,6 +53,8 @@ export class AuthComponent implements OnInit, OnDestroy {
   }
 
   onSubmit(form: NgForm) {
+    console.log("form", form);
+
     if (!form.valid) {
       return;
     }
@@ -68,29 +71,29 @@ export class AuthComponent implements OnInit, OnDestroy {
     const role = form.value.role;
 
     switch (this.isLoginMode) {
-      case 'Login as User':
+      case "Login as User":
         this.store.dispatch(
-          new AuthActions.LoginStart({ email: email, password: password }),
+          new AuthActions.LoginStart({ email: email, password: password })
         );
         break;
-      case 'Login as School':
+      case "Login as School":
         this.store.dispatch(
           new AuthActions.SchoolLoginStart({
             email: email,
             password: password,
-          }),
+          })
         );
         break;
-      case 'SignUp as User':
+      case "SignUp as User":
         this.store.dispatch(
           new AuthActions.SignupStart({
             userName: userName,
             email: email,
             role: role,
-          }),
+          })
         );
         break;
-      case 'SignUp as School':
+      case "SignUp as School":
         this.store.dispatch(
           new AuthActions.SchoolSignupStart({
             name: name,
@@ -101,7 +104,7 @@ export class AuthComponent implements OnInit, OnDestroy {
             city: city,
             state: state,
             country: country,
-          }),
+          })
         );
     }
 

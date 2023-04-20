@@ -77,9 +77,8 @@
             type="number"
             class="form-control"
             id="pageNumber"
-            [(ngModel)]="pageNumber"
+            ngModel
             name="pageNumber"
-            required
             >
           </div>
 
@@ -89,9 +88,8 @@
             type="number"
             class="form-control"
             id="limit"
-            [(ngModel)]="limit"
+            ngModel
             name="limit"
-            [disabled]="!pageNumber"
             >
           </div>
 
@@ -119,13 +117,16 @@
 
           <div class="col-md-4">
             <label for="sortOrder" class="form-label">Sort Order:</label>
-            <input
-            type="text"
-            class="form-control"
-            id="sortOrder"
-            ngModel
-            name="sortOrder"
-            >
+            <select
+              class="form-control"
+              id="sortOrder"
+              [(ngModel)]="sortOrder"
+              name="sortOrder"
+              >
+              <option value="">-</option>
+              <option value="1">Ascending</option>
+              <option value="-1">Descending</option>
+            </select>
           </div>
           <button type="submit" class="btn btn-primary">Submit</button>
         </form>

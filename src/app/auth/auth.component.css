@@ -1,3 +1,6 @@
+input.ng-touched.ng-invalid {
+  border: 1px solid red
+}
 .btn-group .btn {
   border-radius: 0;
 }
@@ -10,3 +13,4 @@
 .btn-group .btn.dropdown-toggle {
   border-radius: 0;
 }
+

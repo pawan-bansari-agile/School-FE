@@ -72,7 +72,7 @@ export class SchoolsComponent implements OnInit {
         limit: form.value.limit ? form.value.limit.toString() : "",
         keyword: form.value.keyword || "",
         sortBy: form.value.sortBy || "",
-        sortOrder: form.value.sortOrder || "",
+        sortOrder: +form.value.sortOrder || "",
       };
     }
 

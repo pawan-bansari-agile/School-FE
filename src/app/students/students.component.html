@@ -59,7 +59,10 @@
             id="name"
             ngModel
             name="name"
+            required
+            #name="ngModel"
           >
+          <span class="help-block" *ngIf="name.invalid && (name.dirty || name.touched)">Name is required!</span>
         </div>
         <div class="form-group">
           <label for="parentNumber">Parents Number</label>
@@ -69,7 +72,14 @@
             id="parentNumber"
             ngModel
             name="parentNumber"
+            required
+            pattern="^(?:(?:\+|0{0,2})91(\s*[\-]\s*)?|[0]?)?[6-9]\d{9}$"
+            #parentNumber="ngModel"
           >
+          <span class="help-block" *ngIf="parentNumber.invalid && (parentNumber.dirty || parentNumber.touched)">
+            <span *ngIf="parentNumber.errors.required">Parents Number is required!</span>
+            <span *ngIf="parentNumber.errors.pattern">Seems you entered wrong phone number!</span>
+          </span>
         </div>
         <div class="form-group">
           <label for="address">Address</label>
@@ -79,7 +89,10 @@
             id="address"
             ngModel
             name="address"
+            required
+            #address="ngModel"
           >
+          <span class="help-block" *ngIf="address.invalid && (address.dirty || address.touched)">Address is required!</span>
         </div>
         <div class="form-group">
           <label for="std">Standard</label>
@@ -89,7 +102,10 @@
             id="std"
             ngModel
             name="std"
+            required
+            #std="ngModel"
           >
+          <span class="help-block" *ngIf="std.invalid && (std.dirty || std.touched)">Std is required!</span>
         </div>
         <div class="form-group">
           <label for="dob">Date of birth</label>
@@ -99,7 +115,10 @@
             id="dob"
             ngModel
             name="dob"
+            required
+            #dob="ngModel"
           >
+          <span class="help-block" *ngIf="dob.invalid && (dob.dirty || dob.touched)">Birth Date is required!</span>
         </div>
         <div class="form-group">
           <div class="d-flex justify-content-between align-items-center">
@@ -114,7 +133,7 @@
         <div class="container-fluid">
           <form #filterForm="ngForm" (ngSubmit)="fetchStudents(filterForm)">
             <div class="col-md-4">
-              <label for="citySelect" class="form-label">FilterBy:</label>
+              <label for="schoolSelect" class="form-label">FilterBy:</label>
               <select
                 class="form-control"
                 id="fieldName"
@@ -189,13 +208,16 @@
 
             <div class="col-md-4">
               <label for="sortOrder" class="form-label">Sort Order:</label>
-              <input
-              type="text"
-              class="form-control"
-              id="sortOrder"
-              ngModel
-              name="sortOrder"
-              >
+              <select
+                class="form-control"
+                id="sortOrder"
+                [(ngModel)]="sortOrder"
+                name="sortOrder"
+                >
+                <option value="">-</option>
+                <option value="1">Ascending</option>
+                <option value="-1">Descending</option>
+              </select>
             </div>
             <button type="submit" class="btn btn-primary">Submit</button>
           </form>
@@ -213,7 +235,7 @@
   </div>
   <div class="student-details">
     <h2>Student Details</h2>
-    <app-student-item *ngIf="selectedStudent$" [selectedStudent]="selectedStudent$"></app-student-item>
+    <app-student-item *ngIf="selectedStudent$" [selectedStudent]="selectedStudent$" ></app-student-item>
     <div *ngIf="!selectedStudent$">
       <p>No Student selected.</p>
     </div>

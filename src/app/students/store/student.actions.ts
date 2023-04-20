@@ -12,6 +12,7 @@ export const SET_STUDENTSS = "[Students] Set Studentss";
 export const SEARCH_COMPLETE = "[Student] Search Complete";
 export const ADD_STUDENT = "[Student] Add Student";
 export const FILTER_STUDENTS = "[Student] Filter Student";
+export const STATUS_UPDATE = "[Student] Status Update";
 
 export class AddStudent implements Action {
   readonly type = ADD_STUDENT;
@@ -84,6 +85,16 @@ export class UpdateStudent implements Action {
   ) {}
 }
 
+export class StatusUpdate implements Action {
+  readonly type = STATUS_UPDATE;
+  constructor(
+    public payload: {
+      id: string;
+      status: boolean;
+    }
+  ) {}
+}
+
 export class DeleteStudent implements Action {
   readonly type = DELETE_STUDENT;
   constructor(public payload: string) {}
@@ -115,4 +126,5 @@ export type StudentActions =
   | AutoFetch
   | SearchComplete
   | AddStudent
-  | FilterStudents;
+  | FilterStudents
+  | StatusUpdate;

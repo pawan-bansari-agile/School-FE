@@ -18,6 +18,7 @@ export class StudentItemComponent implements OnInit {
   schoolId: string = "";
   student: Student | null = null;
   @Input() selectedStudent: Student | null = null;
+  // @Input() status: boolean;
 
   constructor(private store: Store<fromApp.AppState>) {}
 
@@ -71,6 +72,18 @@ export class StudentItemComponent implements OnInit {
 
   onDelete(student) {
     this.store.dispatch(new StudentActions.DeleteStudent(student._id));
+    location.reload();
+  }
+
+  changeStatus(student: Student) {
+    console.log("student details from status update", student);
+    const payload = {
+      id: student._id,
+      status: student.status,
+    };
+
+    this.store.dispatch(new StudentActions.StatusUpdate(payload));
+    // this.status = this.status;
     location.reload();
   }
 }

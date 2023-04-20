@@ -71,6 +71,8 @@ export class StudentEffects {
         } else if (sortBy) {
           searchParams = searchParams.append("sortBy", `${sortBy}`);
         } else if (sortOrder) {
+          console.log("sortorder", sortOrder, typeof sortOrder);
+
           searchParams = searchParams.append("sortOrder", `${sortOrder}`);
         }
       }
@@ -110,6 +112,17 @@ export class StudentEffects {
           dob: updateAction.payload.dob,
           status: updateAction.payload.status,
         }
+      );
+    })
+  );
+
+  @Effect({ dispatch: false })
+  statusUpdate = this.actions$.pipe(
+    ofType(StudentActions.STATUS_UPDATE),
+    switchMap((updateAction: StudentActions.StatusUpdate) => {
+      return this.http.patch<UpdatedStudent>(
+        `http://localhost:3000/students/update/isActive/${updateAction.payload.id}`,
+        { status: !updateAction.payload.status }
       );
     })
   );
