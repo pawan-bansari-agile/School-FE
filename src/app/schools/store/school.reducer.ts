@@ -6,6 +6,7 @@ export interface State {
   school: School;
   updatedSchool: UpdatedSchool;
   searchedSchool: School;
+  schoolError: string;
 }
 
 const initialState: State = {
@@ -13,6 +14,7 @@ const initialState: State = {
   school: null,
   updatedSchool: null,
   searchedSchool: null,
+  schoolError: null,
 };
 
 export function schoolReducer(
@@ -68,6 +70,18 @@ export function schoolReducer(
       return {
         ...state,
         school: state.school,
+      };
+    case SchoolActions.SCHOOL_ERRORS:
+      return {
+        ...state,
+        user: null,
+        authError: action.payload,
+        loading: false,
+      };
+    case SchoolActions.CLEAR_ERROR:
+      return {
+        ...state,
+        schoolError: null,
       };
     default:
       return state;

@@ -1,4 +1,10 @@
-import { Component, Input, OnInit } from "@angular/core";
+import {
+  Component,
+  Input,
+  ComponentFactoryResolver,
+  OnInit,
+  ViewChild,
+} from "@angular/core";
 import { NgForm } from "@angular/forms";
 import { Store } from "@ngrx/store";
 import { Subscription } from "rxjs";
@@ -6,6 +12,8 @@ import { map } from "rxjs/operators";
 import { School } from "src/app/auth/school.model";
 import * as fromApp from "../../store/app.reducer";
 import * as SchoolActions from "../store/school.actions";
+import { AlertComponent } from "src/app/shared/alert/alert.component";
+import { PlaceholderDirective } from "src/app/shared/placeholder/placeholder.directive";
 
 @Component({
   selector: "app-school-item",
@@ -19,7 +27,16 @@ export class SchoolItemComponent implements OnInit {
   school: School | null = null;
   @Input() selectedSchool: School | null = null;
 
-  constructor(private store: Store<fromApp.AppState>) {}
+  @ViewChild(PlaceholderDirective, { static: false })
+  alertHost: PlaceholderDirective;
+  error: string = null;
+
+  private closeSub: Subscription;
+
+  constructor(
+    private store: Store<fromApp.AppState>,
+    private componentFactoryResolver: ComponentFactoryResolver
+  ) {}
 
   ngOnInit() {
     this.roleSub = this.store
@@ -31,6 +48,13 @@ export class SchoolItemComponent implements OnInit {
         })
       )
       .subscribe();
+
+    this.store.select("schools").subscribe((schoolState) => {
+      this.error = schoolState.schoolError;
+      if (this.error) {
+        this.showErrorAlert(this.error);
+      }
+    });
   }
 
   onSubmit(form: NgForm) {
@@ -58,5 +82,24 @@ export class SchoolItemComponent implements OnInit {
 
     this.store.dispatch(new SchoolActions.UpdateSchool(payload));
     location.reload();
+  }
+
+  private showErrorAlert(message: string) {
+    const alertCmpFactory =
+      this.componentFactoryResolver.resolveComponentFactory(AlertComponent);
+    const hostViewContainerRef = this.alertHost.viewContainerRef;
+    hostViewContainerRef.clear();
+
+    const componentRef = hostViewContainerRef.createComponent(alertCmpFactory);
+
+    componentRef.instance.message = message;
+    this.closeSub = componentRef.instance.close.subscribe(() => {
+      this.closeSub.unsubscribe();
+      hostViewContainerRef.clear();
+    });
+  }
+
+  onHandleError() {
+    this.store.dispatch(new SchoolActions.ClearError());
   }
 }

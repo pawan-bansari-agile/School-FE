@@ -2,11 +2,12 @@ import { Injectable } from "@angular/core";
 import { Actions, Effect, ofType } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
 import { HttpClient, HttpParams } from "@angular/common/http";
-import { switchMap, map, withLatestFrom } from "rxjs/operators";
+import { switchMap, map, withLatestFrom, catchError } from "rxjs/operators";
 
 import * as SchoolActions from "./school.actions";
 import { School, UpdatedSchool } from "../../auth/school.model";
 import * as fromApp from "../../store/app.reducer";
+import { of } from "rxjs";
 
 export interface searchOne {
   data: {
@@ -19,6 +20,63 @@ export interface searchResponse {
   data: [];
   message: string;
 }
+
+const handleError = (errorRes: any) => {
+  let errorMessage = "An unknown error occurred!";
+  console.log(" entry in handle error method", errorRes);
+
+  if (!errorRes.error || !errorRes.error.error) {
+    console.log("inside if loop in handle error method", errorRes);
+
+    return of(new SchoolActions.SchoolErrors(errorMessage));
+  }
+  console.log("outside if loop in handle error method", errorRes);
+
+  switch (errorRes.error.error.message) {
+    case "EMAIL_EXISTS":
+      errorMessage = "This email exists already";
+      break;
+    case "EMAIL_NOT_FOUND":
+      errorMessage = "This email does not exist.";
+      break;
+    case "INVALID_PASSWORD":
+      errorMessage = "This password is not correct.";
+      break;
+    case "User not found!":
+      errorMessage = "User Not Found!";
+      break;
+    case "Entered email is not available to use! Please use another!":
+      errorMessage =
+        "Entered email is not available to use! Please use another!";
+      break;
+    case "You can update own details only!":
+      errorMessage = "You can update own details only!";
+      break;
+    case "Provided email is not linked with any account! Please enter a valid email!":
+      errorMessage =
+        "Provided email is not linked with any account! Please enter a valid email!";
+      break;
+    case "Bad Credentials!":
+      errorMessage = "Bad Credentials!";
+      break;
+    case "Password's don't match!":
+      errorMessage = "Password's don't match!";
+      break;
+    case "Session expired! Login again!":
+      errorMessage = "Session expired! Login again!";
+      break;
+    case "School not found!":
+      errorMessage = "School not found!";
+      break;
+    case "Student details not found!":
+      errorMessage = "Student details not found!";
+      break;
+    case "No change detected!":
+      errorMessage = "No change detected!";
+      break;
+  }
+  return of(new SchoolActions.SchoolErrors(errorMessage));
+};
 
 @Injectable()
 export class SchoolEffects {
@@ -66,6 +124,9 @@ export class SchoolEffects {
           return new SchoolActions.SetSchoolss(res.data);
         })
       );
+    }),
+    catchError((errRes) => {
+      return handleError(errRes);
     })
   );
 

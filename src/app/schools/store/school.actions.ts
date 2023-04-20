@@ -10,6 +10,8 @@ export const FIND_ONE_SCHOOL = "[School] Find One School";
 export const AUTO_FETCH = "[School] Auto Fetch";
 export const SET_SCHOOLSS = "[School] Set Schoolss";
 export const SEARCH_COMPLETE = "[School] Search Complete";
+export const SCHOOL_ERRORS = "[School] School Errors";
+export const CLEAR_ERROR = "[School] Clear Errors";
 
 export class SetSchools implements Action {
   readonly type = SET_SCHOOLS;
@@ -78,6 +80,16 @@ export class AutoFetch implements Action {
   readonly type = AUTO_FETCH;
 }
 
+export class SchoolErrors implements Action {
+  readonly type = SCHOOL_ERRORS;
+
+  constructor(public payload: string) {}
+}
+
+export class ClearError implements Action {
+  readonly type = CLEAR_ERROR;
+}
+
 export type SchoolActions =
   | SetSchools
   | FetchSchools
@@ -86,4 +98,6 @@ export type SchoolActions =
   | FindOneSchool
   | AutoFetch
   | SetSchoolss
-  | SearchComplete;
+  | SearchComplete
+  | SchoolErrors
+  | ClearError;
