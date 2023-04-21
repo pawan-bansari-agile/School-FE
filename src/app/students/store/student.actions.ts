@@ -13,6 +13,8 @@ export const SEARCH_COMPLETE = "[Student] Search Complete";
 export const ADD_STUDENT = "[Student] Add Student";
 export const FILTER_STUDENTS = "[Student] Filter Student";
 export const STATUS_UPDATE = "[Student] Status Update";
+export const STUDENT_ERRORS = "[Student] Studetn Error";
+export const CLEAR_ERROR = "[Student] Clear error";
 
 export class AddStudent implements Action {
   readonly type = ADD_STUDENT;
@@ -116,6 +118,16 @@ export class AutoFetch implements Action {
   readonly type = AUTO_FETCH;
 }
 
+export class StudentErrors implements Action {
+  readonly type = STUDENT_ERRORS;
+
+  constructor(public payload: string) {}
+}
+
+export class ClearError implements Action {
+  readonly type = CLEAR_ERROR;
+}
+
 export type StudentActions =
   | SetStudents
   | SetStudentss
@@ -127,4 +139,6 @@ export type StudentActions =
   | SearchComplete
   | AddStudent
   | FilterStudents
-  | StatusUpdate;
+  | StatusUpdate
+  | StudentErrors
+  | ClearError;

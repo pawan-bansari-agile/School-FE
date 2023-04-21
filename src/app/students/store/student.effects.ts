@@ -1,24 +1,52 @@
 import { Injectable } from "@angular/core";
 import { Actions, Effect, ofType } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
-import { HttpClient, HttpParams } from "@angular/common/http";
+import {
+  HttpClient,
+  HttpErrorResponse,
+  HttpParams,
+} from "@angular/common/http";
 import { switchMap, map, withLatestFrom } from "rxjs/operators";
 
 import * as StudentActions from "./student.actions";
 import { Student, UpdatedStudent } from "../student.model";
 import * as fromApp from "../../store/app.reducer";
+import { of } from "rxjs";
 
 export interface searchResponse {
   data: {
     existingStud: Student[];
   };
   message: string;
+  error: HttpErrorResponse;
 }
 
 export interface studentResponse {
   data: [];
   message: string;
+  error: HttpErrorResponse;
 }
+
+const handleError = (errorRes: any) => {
+  let errorMessage = "An unknown error occurred!";
+
+  if (!errorRes.error || !errorRes.error.error) {
+    return of(new StudentActions.StudentErrors(errorMessage));
+  }
+
+  if (
+    errorRes.error.error ==
+    "BSONTypeError: Argument passed in must be a string of 12 bytes or a string of 24 hex characters or an integer"
+  ) {
+    errorMessage = "Invalid Id!";
+  }
+  switch (errorRes.error.error.message) {
+    case "Student details not found!":
+      errorMessage = "Student details not found!";
+      break;
+  }
+  return new StudentActions.StudentErrors(errorMessage);
+};
 
 @Injectable()
 export class StudentEffects {
@@ -52,7 +80,6 @@ export class StudentEffects {
       } = actionData.payload;
 
       let searchParams = new HttpParams();
-      // searchParams = searchParams.append("fieldName", `${fieldName}`);
       if (fieldName && fieldValue) {
         searchParams = searchParams.append("fieldName", `${fieldName}`);
         searchParams = searchParams.append("fieldValue", `${fieldValue}`);
@@ -71,8 +98,6 @@ export class StudentEffects {
         } else if (sortBy) {
           searchParams = searchParams.append("sortBy", `${sortBy}`);
         } else if (sortOrder) {
-          console.log("sortorder", sortOrder, typeof sortOrder);
-
           searchParams = searchParams.append("sortOrder", `${sortOrder}`);
         }
       }
@@ -136,7 +161,11 @@ export class StudentEffects {
       );
     }),
     map((school) => {
-      return new StudentActions.SearchComplete(school.data.existingStud[0]);
+      if (school.error) {
+        return handleError(school);
+      } else {
+        return new StudentActions.SearchComplete(school.data.existingStud[0]);
+      }
     })
   );
 

@@ -1,4 +1,3 @@
-// import { School, UpdatedSchool } from "../../auth/school.model";
 import { UpdatedSchool } from "src/app/auth/school.model";
 import { Student } from "../student.model";
 import * as StudentActions from "./student.actions";
@@ -9,6 +8,7 @@ export interface State {
   updatedSchool: UpdatedSchool;
   searchedStudent: Student;
   newStudent: Student;
+  studentError: string;
 }
 
 const initialState: State = {
@@ -17,6 +17,7 @@ const initialState: State = {
   updatedSchool: null,
   searchedStudent: null,
   newStudent: null,
+  studentError: null,
 };
 
 export function studentReducer(
@@ -79,6 +80,18 @@ export function studentReducer(
       return {
         ...state,
         student: state.student,
+      };
+    case StudentActions.STUDENT_ERRORS:
+      return {
+        ...state,
+        student: null,
+        studentError: action.payload,
+        loading: false,
+      };
+    case StudentActions.CLEAR_ERROR:
+      return {
+        ...state,
+        studentError: null,
       };
     default:
       return state;

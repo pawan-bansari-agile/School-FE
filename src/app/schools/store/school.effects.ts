@@ -28,15 +28,9 @@ export interface searchResponse {
 }
 
 const handleError = (errorRes: any) => {
-  console.log("inside handle error ", errorRes);
   let errorMessage = "An unknown error occurred!";
-  // if (errorRes.value.error.message) {
-  //   errorMessage = "Invalid Id!";
-  //   return of(new SchoolActions.SchoolErrors(errorMessage));
-  // }
-  if (!errorRes.error || !errorRes.error.error) {
-    console.log("inside if loop in handle error");
 
+  if (!errorRes.error || !errorRes.error.error) {
     return of(new SchoolActions.SchoolErrors(errorMessage));
   }
   if (errorRes.error.error.name === "CastError") {
@@ -143,15 +137,9 @@ export class SchoolEffects {
       );
     }),
     map((school) => {
-      console.log("inside map", school);
-
       if (school.error) {
-        console.log("inside if loop");
-
         return handleError(school);
       } else {
-        console.log("inside else loop");
-
         return new SchoolActions.SearchComplete(school.data.existingSchool);
       }
     })

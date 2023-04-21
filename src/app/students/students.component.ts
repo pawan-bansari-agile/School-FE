@@ -1,13 +1,21 @@
 import { HttpClient } from "@angular/common/http";
-import { Component, EventEmitter, OnInit, Output } from "@angular/core";
+import {
+  Component,
+  EventEmitter,
+  OnInit,
+  Output,
+  ViewChild,
+  ComponentFactoryResolver,
+} from "@angular/core";
 import { Store } from "@ngrx/store";
-import { Observable, Subscription } from "rxjs";
+import { Subscription } from "rxjs";
 import { map } from "rxjs/operators";
 import * as fromApp from "../store/app.reducer";
 import { Student } from "./student.model";
 import * as StudentActions from "./store/student.actions";
 import { NgForm } from "@angular/forms";
-// import { Router } from "@angular/router";
+import { PlaceholderDirective } from "../shared/placeholder/placeholder.directive";
+import { AlertComponent } from "../shared/alert/alert.component";
 
 export interface studentResponse {
   data: [];
@@ -22,7 +30,8 @@ export interface studentResponse {
 export class StudentsComponent implements OnInit {
   constructor(
     private http: HttpClient,
-    private store: Store<fromApp.AppState> // private router: Router
+    private store: Store<fromApp.AppState>,
+    private componentFactoryResolver: ComponentFactoryResolver
   ) {}
 
   students$: Student[];
@@ -47,6 +56,13 @@ export class StudentsComponent implements OnInit {
 
   onFilter: boolean = false;
 
+  private closeSub: Subscription;
+
+  error: string = null;
+
+  @ViewChild(PlaceholderDirective, { static: false })
+  alertHost: PlaceholderDirective;
+
   ngOnInit() {
     this.userSub = this.store.select("auth").subscribe((authState) => {
       this.userRole = authState.school ? authState.school.role : "";
@@ -59,8 +75,32 @@ export class StudentsComponent implements OnInit {
       .select("students")
 
       .subscribe((studentState) => {
+        this.error = studentState.studentError;
+        if (this.error) {
+          this.showErrorAlert(this.error);
+        }
         this.students$ = studentState.students;
       });
+  }
+
+  onHandleError() {
+    this.store.dispatch(new StudentActions.ClearError());
+  }
+
+  private showErrorAlert(message: string) {
+    const alertCmpFactory =
+      this.componentFactoryResolver.resolveComponentFactory(AlertComponent);
+    const hostViewContainerRef = this.alertHost.viewContainerRef;
+    hostViewContainerRef.clear();
+
+    const componentRef = hostViewContainerRef.createComponent(alertCmpFactory);
+
+    componentRef.instance.message = message;
+    this.closeSub = componentRef.instance.close.subscribe(() => {
+      hostViewContainerRef.clear();
+      this.closeSub.unsubscribe();
+      this.error = null;
+    });
   }
 
   fetchStudents(form: NgForm) {
@@ -131,7 +171,6 @@ export class StudentsComponent implements OnInit {
       dob: form.value.dob,
     };
     this.store.dispatch(new StudentActions.AddStudent(payload));
-    // location.reload();
     this.fetchStudents(form);
     this.createStud = false;
   }

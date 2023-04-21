@@ -1,6 +1,7 @@
 import { Component, Input, Output, EventEmitter } from "@angular/core";
 import * as fromApp from "../../store/app.reducer";
 import * as SchoolActions from "../../schools/store/school.actions";
+import * as StudentActions from "../../students/store/student.actions";
 
 import { Store } from "@ngrx/store";
 
@@ -18,5 +19,6 @@ export class AlertComponent {
   onClose() {
     this.close.emit();
     this.store.dispatch(new SchoolActions.ClearError());
+    this.store.dispatch(new StudentActions.ClearError());
   }
 }

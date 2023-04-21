@@ -4,7 +4,6 @@ import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { RouterModule } from "@angular/router";
 import { StudentsComponent } from "./students.component";
 import { SharedModule } from "../shared/shared.module";
-// import { SchoolItemComponent } from "./school-item/school-item.component";
 import { StudentItemComponent } from "./student-item/student-item.component";
 
 @NgModule({
