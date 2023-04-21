@@ -1,7 +1,11 @@
 import { Injectable } from "@angular/core";
 import { Actions, Effect, ofType } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
-import { HttpClient, HttpParams } from "@angular/common/http";
+import {
+  HttpClient,
+  HttpErrorResponse,
+  HttpParams,
+} from "@angular/common/http";
 import { switchMap, map, withLatestFrom, catchError } from "rxjs/operators";
 
 import * as SchoolActions from "./school.actions";
@@ -14,68 +18,36 @@ export interface searchOne {
     existingSchool: School;
   };
   message: string;
+  error: HttpErrorResponse;
 }
 
 export interface searchResponse {
   data: [];
   message: string;
+  error: HttpErrorResponse;
 }
 
 const handleError = (errorRes: any) => {
+  console.log("inside handle error ", errorRes);
   let errorMessage = "An unknown error occurred!";
-  console.log(" entry in handle error method", errorRes);
-
+  // if (errorRes.value.error.message) {
+  //   errorMessage = "Invalid Id!";
+  //   return of(new SchoolActions.SchoolErrors(errorMessage));
+  // }
   if (!errorRes.error || !errorRes.error.error) {
-    console.log("inside if loop in handle error method", errorRes);
+    console.log("inside if loop in handle error");
 
     return of(new SchoolActions.SchoolErrors(errorMessage));
   }
-  console.log("outside if loop in handle error method", errorRes);
-
+  if (errorRes.error.error.name === "CastError") {
+    errorMessage = "Invalid Id!";
+  }
   switch (errorRes.error.error.message) {
-    case "EMAIL_EXISTS":
-      errorMessage = "This email exists already";
-      break;
-    case "EMAIL_NOT_FOUND":
-      errorMessage = "This email does not exist.";
-      break;
-    case "INVALID_PASSWORD":
-      errorMessage = "This password is not correct.";
-      break;
-    case "User not found!":
-      errorMessage = "User Not Found!";
-      break;
-    case "Entered email is not available to use! Please use another!":
-      errorMessage =
-        "Entered email is not available to use! Please use another!";
-      break;
-    case "You can update own details only!":
-      errorMessage = "You can update own details only!";
-      break;
-    case "Provided email is not linked with any account! Please enter a valid email!":
-      errorMessage =
-        "Provided email is not linked with any account! Please enter a valid email!";
-      break;
-    case "Bad Credentials!":
-      errorMessage = "Bad Credentials!";
-      break;
-    case "Password's don't match!":
-      errorMessage = "Password's don't match!";
-      break;
-    case "Session expired! Login again!":
-      errorMessage = "Session expired! Login again!";
-      break;
     case "School not found!":
       errorMessage = "School not found!";
       break;
-    case "Student details not found!":
-      errorMessage = "Student details not found!";
-      break;
-    case "No change detected!":
-      errorMessage = "No change detected!";
-      break;
   }
-  return of(new SchoolActions.SchoolErrors(errorMessage));
+  return new SchoolActions.SchoolErrors(errorMessage);
 };
 
 @Injectable()
@@ -96,7 +68,6 @@ export class SchoolEffects {
       } = actionData.payload;
 
       let searchParams = new HttpParams();
-      // searchParams = searchParams.append("fieldName", `${fieldName}`);
       if (fieldName && fieldValue) {
         searchParams = searchParams.append("fieldName", `${fieldName}`);
         searchParams = searchParams.append("fieldValue", `${fieldValue}`);
@@ -121,12 +92,13 @@ export class SchoolEffects {
 
       return this.http.get<searchResponse>(url, { params: searchParams }).pipe(
         map((res) => {
-          return new SchoolActions.SetSchoolss(res.data);
+          if (res.error) {
+            return handleError(res);
+          } else {
+            return new SchoolActions.SetSchoolss(res.data);
+          }
         })
       );
-    }),
-    catchError((errRes) => {
-      return handleError(errRes);
     })
   );
 
@@ -171,7 +143,17 @@ export class SchoolEffects {
       );
     }),
     map((school) => {
-      return new SchoolActions.SearchComplete(school.data.existingSchool);
+      console.log("inside map", school);
+
+      if (school.error) {
+        console.log("inside if loop");
+
+        return handleError(school);
+      } else {
+        console.log("inside else loop");
+
+        return new SchoolActions.SearchComplete(school.data.existingSchool);
+      }
     })
   );
 

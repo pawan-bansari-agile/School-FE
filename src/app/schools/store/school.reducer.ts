@@ -25,7 +25,6 @@ export function schoolReducer(
     case SchoolActions.FETCH_SCHOOLS:
       return {
         ...state,
-        // schools: action.payload.data,
       };
     case SchoolActions.SET_SCHOOLS:
       return {
@@ -74,8 +73,8 @@ export function schoolReducer(
     case SchoolActions.SCHOOL_ERRORS:
       return {
         ...state,
-        user: null,
-        authError: action.payload,
+        school: null,
+        schoolError: action.payload,
         loading: false,
       };
     case SchoolActions.CLEAR_ERROR:

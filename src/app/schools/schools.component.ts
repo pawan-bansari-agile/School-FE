@@ -1,10 +1,18 @@
-import { HttpClient } from "@angular/common/http";
-import { Component, EventEmitter, OnInit, Output } from "@angular/core";
+import {
+  Component,
+  EventEmitter,
+  OnInit,
+  Output,
+  ViewChild,
+  ComponentFactoryResolver,
+} from "@angular/core";
 import { NgForm } from "@angular/forms";
 import { Store } from "@ngrx/store";
-import { Observable, Subscription } from "rxjs";
+import { Subscription } from "rxjs";
 import { map } from "rxjs/operators";
 import { School } from "../auth/school.model"; // Assuming you have a School model defined
+import { AlertComponent } from "../shared/alert/alert.component";
+import { PlaceholderDirective } from "../shared/placeholder/placeholder.directive";
 import * as fromApp from "../store/app.reducer";
 import * as SchoolActions from "./store/school.actions";
 
@@ -20,36 +28,53 @@ export interface schoolResponse {
 })
 export class SchoolsComponent implements OnInit {
   constructor(
-    private http: HttpClient,
-    private store: Store<fromApp.AppState>
+    private store: Store<fromApp.AppState>,
+    private componentFactoryResolver: ComponentFactoryResolver
   ) {}
-
   schools$: School[];
-
   schools: School[] = [];
-
   selectedSchool$: School | null = null;
-
   selectedSchool: Subscription;
-
   schoolsSub: Subscription;
-
   @Output() selectionChange = new EventEmitter<School>();
-
   searchedSchool: School | null = null;
-
   onFilter: boolean = false;
-
   role: string = "";
   schoolId: string = "";
+  private closeSub: Subscription;
+  error: string = null;
+
+  @ViewChild(PlaceholderDirective, { static: false })
+  alertHost: PlaceholderDirective;
 
   ngOnInit() {
-    this.schoolsSub = this.store
-      .select("schools")
+    this.schoolsSub = this.store.select("schools").subscribe((schoolState) => {
+      this.error = schoolState.schoolError;
+      if (this.error) {
+        this.showErrorAlert(this.error);
+      }
+      this.schools$ = schoolState.schools;
+    });
+  }
 
-      .subscribe((schoolState) => {
-        this.schools$ = schoolState.schools;
-      });
+  onHandleError() {
+    this.store.dispatch(new SchoolActions.ClearError());
+  }
+
+  private showErrorAlert(message: string) {
+    const alertCmpFactory =
+      this.componentFactoryResolver.resolveComponentFactory(AlertComponent);
+    const hostViewContainerRef = this.alertHost.viewContainerRef;
+    hostViewContainerRef.clear();
+
+    const componentRef = hostViewContainerRef.createComponent(alertCmpFactory);
+
+    componentRef.instance.message = message;
+    this.closeSub = componentRef.instance.close.subscribe(() => {
+      hostViewContainerRef.clear();
+      this.closeSub.unsubscribe();
+      this.error = null;
+    });
   }
 
   fetchSchools(form: NgForm) {
@@ -81,7 +106,6 @@ export class SchoolsComponent implements OnInit {
   }
 
   selectSchool(school: School): void {
-    // this.store.dispatch(new SchoolActions.SetSchools(school));
     this.selectedSchool$ = school;
     this.selectionChange.emit(school);
   }

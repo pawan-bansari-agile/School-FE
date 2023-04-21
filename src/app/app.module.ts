@@ -16,7 +16,6 @@ import { AuthEffects } from "./auth/store/auth.effects";
 import { environment } from "../environments/environment";
 import { SchoolEffects } from "./schools/store/school.effects";
 import { StudentEffects } from "./students/store/student.effects";
-// import { StudentsComponent } from "./students/students.component";
 
 @NgModule({
   declarations: [AppComponent, HeaderComponent],
@@ -32,6 +31,5 @@ import { StudentEffects } from "./students/store/student.effects";
     CoreModule,
   ],
   bootstrap: [AppComponent],
-  // providers: [LoggingService]
 })
 export class AppModule {}

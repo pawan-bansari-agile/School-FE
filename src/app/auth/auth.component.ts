@@ -53,8 +53,6 @@ export class AuthComponent implements OnInit, OnDestroy {
   }
 
   onSubmit(form: NgForm) {
-    // console.log("form", form);
-
     if (!form.valid) {
       return;
     }

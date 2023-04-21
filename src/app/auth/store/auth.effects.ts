@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { Router } from "@angular/router";
 import { Actions, ofType, Effect } from "@ngrx/effects";
-import { switchMap, catchError, map, tap } from "rxjs/operators";
+import { switchMap, map, tap } from "rxjs/operators";
 import { of } from "rxjs";
 import { HttpClient, HttpErrorResponse } from "@angular/common/http";
 
@@ -9,7 +9,6 @@ import * as AuthActions from "./auth.actions";
 import { User } from "../user.model";
 import { AuthService } from "../auth.service";
 import { School } from "src/app/auth/school.model";
-import * as SchoolActions from "../../schools/store/school.actions";
 
 export interface AuthResponseData {
   data: {
@@ -26,7 +25,7 @@ export interface AuthResponseData {
     };
   };
   message: string;
-  // expirationDate: Date;
+  error: HttpErrorResponse;
 }
 
 export interface SchoolAuthResponseData {
@@ -50,7 +49,7 @@ export interface SchoolAuthResponseData {
     };
   };
   message: string;
-  // expirationDate: Date;
+  error: HttpErrorResponse;
 }
 
 const handleAuthentication = (
@@ -196,27 +195,31 @@ const handleError = (errorRes: any) => {
     case "INVALID_PASSWORD":
       errorMessage = "This password is not correct.";
       break;
-  }
-  return of(new AuthActions.AuthenticateFail(errorMessage));
-};
+    case "Entered email is not available to use! Please use another!":
+      errorMessage =
+        "Entered email is not available to use! Please use another!";
 
-const SchoolhandleError = (errorRes: any) => {
-  let errorMessage = "An unknown error occurred!";
-  if (!errorRes.error || !errorRes.error.error) {
-    return of(new AuthActions.SchoolAuthenticateFail(errorMessage));
+      break;
+    case "User not found!":
+      errorMessage = "User not found!";
+      break;
+    case "Bad Credentials!":
+      errorMessage = "Bad Credentials!";
+      break;
+    case "You can update own details only!":
+      errorMessage = "You can update own details only!";
+      break;
+    case "School not found!":
+      errorMessage = "School not found!";
+      break;
+    case "Student details not found!":
+      errorMessage = "Student details not found!";
+      break;
+    case "No change detected!":
+      errorMessage = "No change detected!";
+      break;
   }
-  switch (errorRes.error.error.message) {
-    case "EMAIL_EXISTS":
-      errorMessage = "This email exists already";
-      break;
-    case "EMAIL_NOT_FOUND":
-      errorMessage = "This email does not exist.";
-      break;
-    case "INVALID_PASSWORD":
-      errorMessage = "This password is not correct.";
-      break;
-  }
-  return of(new AuthActions.SchoolAuthenticateFail(errorMessage));
+  return new AuthActions.AuthenticateFail(errorMessage);
 };
 
 @Injectable()
@@ -225,8 +228,6 @@ export class AuthEffects {
   authSignup = this.actions$.pipe(
     ofType(AuthActions.SIGNUP_START),
     switchMap((signupAction: AuthActions.SignupStart) => {
-      console.log("inside auth signupstart");
-
       return this.http
         .post<AuthResponseData>("http://localhost:3000/users/create", {
           userName: signupAction.payload.userName,
@@ -238,29 +239,24 @@ export class AuthEffects {
             this.authService.setLogoutTimer(600 * 1000);
           }),
           map((resData) => {
-            const data = {
-              access_token: resData.data.access_token,
-              user: {
-                userName: resData.data.user.userName,
-                email: resData.data.user.email,
-                role: resData.data.user.role,
-                forgetPwdToken: resData.data.user.forgetPwdToken,
-                forgetPwdExpires: resData.data.user.forgetPwdExpires,
-                deleted: resData.data.user.deleted,
-                _id: resData.data.user._id,
-                __v: resData.data.user.__v,
-              },
-            };
-
-            return handleAuthentication(data, resData.message);
-          }),
-          catchError((errorRes) => {
-            console.log(
-              "error res from catcherror of auth signup start",
-              errorRes.message
-            );
-
-            return handleError(errorRes.message);
+            if (resData.error) {
+              return handleError(resData);
+            } else {
+              const data = {
+                access_token: resData.data.access_token,
+                user: {
+                  userName: resData.data.user.userName,
+                  email: resData.data.user.email,
+                  role: resData.data.user.role,
+                  forgetPwdToken: resData.data.user.forgetPwdToken,
+                  forgetPwdExpires: resData.data.user.forgetPwdExpires,
+                  deleted: resData.data.user.deleted,
+                  _id: resData.data.user._id,
+                  __v: resData.data.user.__v,
+                },
+              };
+              return handleAuthentication(data, resData.message);
+            }
           })
         );
     })
@@ -286,30 +282,31 @@ export class AuthEffects {
             this.authService.setLogoutTimer(600 * 1000);
           }),
           map((resData) => {
-            const data = {
-              access_token: resData.data.access_token,
-              user: {
-                name: resData.data.user.name,
-                email: resData.data.user.email,
-                address: resData.data.user.address,
-                photo: resData.data.user.photo,
-                zipCode: resData.data.user.zipCode,
-                city: resData.data.user.city,
-                state: resData.data.user.state,
-                country: resData.data.user.country,
-                role: resData.data.user.role,
-                forgetPwdToken: resData.data.user.forgetPwdToken,
-                forgetPwdExpires: resData.data.user.forgetPwdExpires,
-                deleted: resData.data.user.deleted,
-                _id: resData.data.user._id,
-                __v: resData.data.user.__v,
-              },
-            };
+            if (resData.error) {
+              return handleError(resData);
+            } else {
+              const data = {
+                access_token: resData.data.access_token,
+                user: {
+                  name: resData.data.user.name,
+                  email: resData.data.user.email,
+                  address: resData.data.user.address,
+                  photo: resData.data.user.photo,
+                  zipCode: resData.data.user.zipCode,
+                  city: resData.data.user.city,
+                  state: resData.data.user.state,
+                  country: resData.data.user.country,
+                  role: resData.data.user.role,
+                  forgetPwdToken: resData.data.user.forgetPwdToken,
+                  forgetPwdExpires: resData.data.user.forgetPwdExpires,
+                  deleted: resData.data.user.deleted,
+                  _id: resData.data.user._id,
+                  __v: resData.data.user.__v,
+                },
+              };
 
-            return SchoolHandleAuthentication(data, resData.message);
-          }),
-          catchError((errorRes) => {
-            return SchoolhandleError(errorRes);
+              return SchoolHandleAuthentication(data, resData.message);
+            }
           })
         );
     })
@@ -329,24 +326,24 @@ export class AuthEffects {
             this.authService.setLogoutTimer(600 * 1000);
           }),
           map((resData) => {
-            const data = {
-              access_token: resData.data.access_token,
-              user: {
-                userName: resData.data.user.userName,
-                email: resData.data.user.email,
-                role: resData.data.user.role,
-                forgetPwdToken: resData.data.user.forgetPwdToken,
-                forgetPwdExpires: resData.data.user.forgetPwdExpires,
-                deleted: resData.data.user.deleted,
-                _id: resData.data.user._id,
-                __v: resData.data.user.__v,
-              },
-            };
-
-            return handleAuthentication(data, resData.message);
-          }),
-          catchError((errorRes) => {
-            return handleError(errorRes);
+            if (resData.error) {
+              return handleError(resData);
+            } else {
+              const data = {
+                access_token: resData.data.access_token,
+                user: {
+                  userName: resData.data.user.userName,
+                  email: resData.data.user.email,
+                  role: resData.data.user.role,
+                  forgetPwdToken: resData.data.user.forgetPwdToken,
+                  forgetPwdExpires: resData.data.user.forgetPwdExpires,
+                  deleted: resData.data.user.deleted,
+                  _id: resData.data.user._id,
+                  __v: resData.data.user.__v,
+                },
+              };
+              return handleAuthentication(data, resData.message);
+            }
           })
         );
     })
@@ -366,30 +363,31 @@ export class AuthEffects {
             this.authService.setLogoutTimer(600 * 1000);
           }),
           map((resData) => {
-            const data = {
-              access_token: resData.data.access_token,
-              user: {
-                name: resData.data.user.name,
-                email: resData.data.user.email,
-                address: resData.data.user.address,
-                photo: resData.data.user.photo,
-                zipCode: resData.data.user.zipCode,
-                city: resData.data.user.city,
-                state: resData.data.user.state,
-                country: resData.data.user.country,
-                role: resData.data.user.role,
-                forgetPwdToken: resData.data.user.forgetPwdToken,
-                forgetPwdExpires: resData.data.user.forgetPwdExpires,
-                deleted: resData.data.user.deleted,
-                _id: resData.data.user._id,
-                __v: resData.data.user.__v,
-              },
-            };
+            if (resData.error) {
+              return handleError(resData);
+            } else {
+              const data = {
+                access_token: resData.data.access_token,
+                user: {
+                  name: resData.data.user.name,
+                  email: resData.data.user.email,
+                  address: resData.data.user.address,
+                  photo: resData.data.user.photo,
+                  zipCode: resData.data.user.zipCode,
+                  city: resData.data.user.city,
+                  state: resData.data.user.state,
+                  country: resData.data.user.country,
+                  role: resData.data.user.role,
+                  forgetPwdToken: resData.data.user.forgetPwdToken,
+                  forgetPwdExpires: resData.data.user.forgetPwdExpires,
+                  deleted: resData.data.user.deleted,
+                  _id: resData.data.user._id,
+                  __v: resData.data.user.__v,
+                },
+              };
 
-            return SchoolHandleAuthentication(data, resData.message);
-          }),
-          catchError((errorRes) => {
-            return SchoolhandleError(errorRes);
+              return SchoolHandleAuthentication(data, resData.message);
+            }
           })
         );
     })

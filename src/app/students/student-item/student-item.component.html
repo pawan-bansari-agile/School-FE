@@ -5,7 +5,8 @@
       <h4>Birth Date: {{ selectedStudent.dob }}</h4>
       <div style="display: flex; justify-content: space-between; align-items: center;">
         <h4>Status: {{ selectedStudent.status }}</h4>
-        <button (click)="changeStatus(selectedStudent)">Change Status</button>
+        <button *ngIf="schoolId == selectedStudent.school"
+        (click)="changeStatus(selectedStudent)">Change Status</button>
       </div>
       <h4>Deleted: {{ selectedStudent.deleted }}</h4>
       <div *ngIf="schoolId == selectedStudent.school">
