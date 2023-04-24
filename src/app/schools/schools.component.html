@@ -20,6 +20,7 @@
     </form>
     <div *ngIf="!!searchedSchool" class="card">
       <div class="card-body">
+        <img src="{{ searchedSchool.photo }}" class="img-responsive" alt="School Photo">
         <h4 class="card-title">Name: {{ searchedSchool.name }}</h4>
         <h6 class="card-subtitle mb-2 text-muted">Email: {{ searchedSchool.email }}</h6>
         <p class="card-text">Address: {{ searchedSchool.address }}</p>
@@ -77,8 +78,9 @@
             type="number"
             class="form-control"
             id="pageNumber"
-            ngModel
+            [(ngModel)]="pageNumber"
             name="pageNumber"
+            required
             >
           </div>
 
@@ -88,8 +90,9 @@
             type="number"
             class="form-control"
             id="limit"
-            ngModel
+            [(ngModel)]="limit"
             name="limit"
+            [disabled]="!pageNumber"
             >
           </div>
 

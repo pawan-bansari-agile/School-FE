@@ -32,16 +32,21 @@
         <span class="help-block" *ngIf="address.touched && address.invalid">Please enter a valid address</span>
       </div>
       <div *ngIf="isLoginMode === 'SignUp as School'" class="form-group">
-        <label for="photo">Photo</label>
+        <label for="file">Photo</label>
         <input
-          type="text"
-          id="photo"
+          type="file"
           class="form-control"
           ngModel
-          name="photo"
+          name="file"
           #photo="ngModel"
+          accept=".jpg, .jpeg, .png"
+          (change)="getFile($event)"
         />
-        <span class="help-block" *ngIf="photo.touched">You can add the photo later!</span>
+        <span class="help-block" *ngIf="photo.touched && !photo.value">You can add the photo later!</span>
+        <img [src]="imageUrl" *ngIf="imageUrl && photo.value" class="img-responsive">
+        <div *ngIf="!photo.value">
+          <small class="form-text text-danger">Only one image can be uploaded!</small>
+        </div>
       </div>
       <div *ngIf="isLoginMode === 'SignUp as School'" class="form-group">
         <label for="zipCode">ZipCode</label>

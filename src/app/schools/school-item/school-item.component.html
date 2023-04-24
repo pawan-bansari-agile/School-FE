@@ -1,5 +1,6 @@
 <ng-template appPlaceholder></ng-template>
 <h3>Name: {{ selectedSchool.name }}</h3>
+<img src="{{ selectedSchool.photo }}" class="img-responsive" alt="School Photo">
       <h4>Email: {{ selectedSchool.email }}</h4>
       <p>Address: {{ selectedSchool.address }}</p>
       <p>ZipCode: {{ selectedSchool.zipCode }}</p>
@@ -50,6 +51,23 @@
               #address="ngModel"
             >
             <span class="help-block" *ngIf="address.invalid && (address.dirty || address.touched)">Address is required!</span>
+          </div>
+          <div>
+            <label for="file">Photo</label>
+            <input
+              type="file"
+              class="form-control"
+              ngModel
+              name="file"
+              #photo="ngModel"
+              accept=".jpg, .jpeg, .png"
+              (change)="getFile($event)"
+            />
+            <span class="help-block" *ngIf="photo.touched && !photo.value">Photo empty!</span>
+            <img [src]="imageUrl" *ngIf="imageUrl && photo.value" class="img-responsive">
+            <div *ngIf="!photo.value">
+              <small class="form-text text-danger">Only one image can be uploaded!</small>
+            </div>
           </div>
           <div class="form-group">
             <label for="zipCode">ZipCode</label>

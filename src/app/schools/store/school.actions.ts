@@ -47,7 +47,7 @@ export class UpdateSchool implements Action {
       name: string;
       email: string;
       address: string;
-      photo: string;
+      file: File;
       zipCode: number;
       city: string;
       state: string;

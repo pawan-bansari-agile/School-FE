@@ -33,6 +33,9 @@ export class SchoolItemComponent implements OnInit {
 
   private closeSub: Subscription;
 
+  file: File;
+  imageUrl: string;
+
   constructor(
     private store: Store<fromApp.AppState>,
     private componentFactoryResolver: ComponentFactoryResolver
@@ -71,7 +74,7 @@ export class SchoolItemComponent implements OnInit {
     const payload = {
       name: name,
       address: address,
-      photo: photo,
+      file: this.file,
       zipCode: zipCode,
       city: city,
       state: state,
@@ -82,6 +85,18 @@ export class SchoolItemComponent implements OnInit {
 
     this.store.dispatch(new SchoolActions.UpdateSchool(payload));
     location.reload();
+  }
+
+  getFile(event) {
+    if (event.target.files.length > 0) {
+      this.file = event.target.files[0];
+      console.log("from get file method", this.file);
+      const reader = new FileReader();
+      reader.readAsDataURL(this.file);
+      reader.onload = () => {
+        this.imageUrl = reader.result as string;
+      };
+    }
   }
 
   private showErrorAlert(message: string) {

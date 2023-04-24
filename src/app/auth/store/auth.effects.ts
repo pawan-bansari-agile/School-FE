@@ -266,17 +266,34 @@ export class AuthEffects {
   schoolAuthSignup = this.actions$.pipe(
     ofType(AuthActions.SCHOOL_SIGNUP_START),
     switchMap((signupAction: AuthActions.SchoolSignupStart) => {
+      const fd = new FormData();
+      fd.append("name", signupAction.payload.name);
+      fd.append("email", signupAction.payload.email);
+      fd.append("address", signupAction.payload.address);
+      fd.append(
+        "file",
+        signupAction.payload.file,
+        signupAction.payload.file.name
+      );
+      fd.append("zipCode", signupAction.payload.zipCode.toString());
+      fd.append("city", signupAction.payload.city);
+      fd.append("state", signupAction.payload.state);
+      fd.append("country", signupAction.payload.country);
       return this.http
-        .post<SchoolAuthResponseData>("http://localhost:3000/school/create", {
-          name: signupAction.payload.name,
-          email: signupAction.payload.email,
-          address: signupAction.payload.address,
-          photo: signupAction.payload.photo ? signupAction.payload.photo : "",
-          zipCode: signupAction.payload.zipCode.toString(),
-          city: signupAction.payload.city,
-          state: signupAction.payload.state,
-          country: signupAction.payload.country,
-        })
+        .post<SchoolAuthResponseData>(
+          "http://localhost:3000/school/create",
+          fd
+          // {
+          //   name: signupAction.payload.name,
+          //   email: signupAction.payload.email,
+          //   address: signupAction.payload.address,
+          //   file: signupAction.payload.file ? signupAction.payload.file : "",
+          //   zipCode: signupAction.payload.zipCode.toString(),
+          //   city: signupAction.payload.city,
+          //   state: signupAction.payload.state,
+          //   country: signupAction.payload.country,
+          // }
+        )
         .pipe(
           tap((resData) => {
             this.authService.setLogoutTimer(600 * 1000);

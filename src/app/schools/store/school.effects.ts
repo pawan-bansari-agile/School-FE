@@ -112,18 +112,32 @@ export class SchoolEffects {
   updateSchool = this.actions$.pipe(
     ofType(SchoolActions.UPDATE_SCHOOL),
     switchMap((updateAction: SchoolActions.UpdateSchool) => {
+      const fd = new FormData();
+      fd.append("name", updateAction.payload.name);
+      fd.append("email", updateAction.payload.email);
+      fd.append("address", updateAction.payload.address);
+      fd.append(
+        "file",
+        updateAction.payload.file,
+        updateAction.payload.file.name
+      );
+      fd.append("zipCode", updateAction.payload.zipCode.toString());
+      fd.append("city", updateAction.payload.city);
+      fd.append("state", updateAction.payload.state);
+      fd.append("country", updateAction.payload.country);
       return this.http.patch<UpdatedSchool>(
         "http://localhost:3000/school/update",
-        {
-          name: updateAction.payload.name,
-          email: updateAction.payload.email,
-          address: updateAction.payload.address,
-          photo: updateAction.payload.photo,
-          zipCode: updateAction.payload.zipCode,
-          city: updateAction.payload.city,
-          state: updateAction.payload.state,
-          country: updateAction.payload.country,
-        }
+        // {
+        //   name: updateAction.payload.name,
+        //   email: updateAction.payload.email,
+        //   address: updateAction.payload.address,
+        //   photo: updateAction.payload.photo,
+        //   zipCode: updateAction.payload.zipCode,
+        //   city: updateAction.payload.city,
+        //   state: updateAction.payload.state,
+        //   country: updateAction.payload.country,
+        // }
+        fd
       );
     })
   );

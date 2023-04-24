@@ -29,6 +29,9 @@ export class AuthComponent implements OnInit, OnDestroy {
   private closeSub: Subscription;
   private storeSub: Subscription;
 
+  file: File;
+  imageUrl: string;
+
   constructor(
     private componentFactoryResolver: ComponentFactoryResolver,
     private store: Store<fromApp.AppState>
@@ -58,7 +61,7 @@ export class AuthComponent implements OnInit, OnDestroy {
     }
     const name = form.value.name;
     const address = form.value.address;
-    const photo = form.value.photo;
+    const file = this.file;
     const zipCode = form.value.zipCode;
     const city = form.value.city;
     const state = form.value.state;
@@ -67,6 +70,16 @@ export class AuthComponent implements OnInit, OnDestroy {
     const email = form.value.email;
     const password = form.value.password;
     const role = form.value.role;
+
+    // const formData = new FormData();
+    // formData.append("name", form.value.name);
+    // formData.append("address", form.value.address);
+    // formData.append("file", this.file);
+    // formData.append("zipCode", form.value.zipCode);
+    // formData.append("city", form.value.city);
+    // formData.append("state", form.value.state);
+    // formData.append("country", form.value.country);
+    // formData.append("email", form.value.email);
 
     switch (this.isLoginMode) {
       case "Login as User":
@@ -97,7 +110,7 @@ export class AuthComponent implements OnInit, OnDestroy {
             name: name,
             email: email,
             address: address,
-            photo: photo,
+            file: file,
             zipCode: zipCode,
             city: city,
             state: state,
@@ -107,6 +120,18 @@ export class AuthComponent implements OnInit, OnDestroy {
     }
 
     form.reset();
+  }
+
+  getFile(event) {
+    if (event.target.files.length > 0) {
+      this.file = event.target.files[0];
+      console.log("from get file method", this.file);
+      const reader = new FileReader();
+      reader.readAsDataURL(this.file);
+      reader.onload = () => {
+        this.imageUrl = reader.result as string;
+      };
+    }
   }
 
   onHandleError() {
