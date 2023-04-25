@@ -280,20 +280,7 @@ export class AuthEffects {
       fd.append("state", signupAction.payload.state);
       fd.append("country", signupAction.payload.country);
       return this.http
-        .post<SchoolAuthResponseData>(
-          "http://localhost:3000/school/create",
-          fd
-          // {
-          //   name: signupAction.payload.name,
-          //   email: signupAction.payload.email,
-          //   address: signupAction.payload.address,
-          //   file: signupAction.payload.file ? signupAction.payload.file : "",
-          //   zipCode: signupAction.payload.zipCode.toString(),
-          //   city: signupAction.payload.city,
-          //   state: signupAction.payload.state,
-          //   country: signupAction.payload.country,
-          // }
-        )
+        .post<SchoolAuthResponseData>("http://localhost:3000/school/create", fd)
         .pipe(
           tap((resData) => {
             this.authService.setLogoutTimer(600 * 1000);

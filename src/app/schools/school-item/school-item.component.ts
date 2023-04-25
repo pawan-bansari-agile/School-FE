@@ -63,7 +63,6 @@ export class SchoolItemComponent implements OnInit {
   onSubmit(form: NgForm) {
     const name = form.value.name;
     const address = form.value.address;
-    const photo = form.value.photo;
     const zipCode = form.value.zipCode.toString();
     const city = form.value.city;
     const state = form.value.state;
@@ -90,7 +89,6 @@ export class SchoolItemComponent implements OnInit {
   getFile(event) {
     if (event.target.files.length > 0) {
       this.file = event.target.files[0];
-      console.log("from get file method", this.file);
       const reader = new FileReader();
       reader.readAsDataURL(this.file);
       reader.onload = () => {

@@ -25,6 +25,7 @@ export class AddStudent implements Action {
       address: string;
       std: number;
       dob: Date;
+      file: File;
     }
   ) {}
 }
@@ -77,12 +78,12 @@ export class UpdateStudent implements Action {
     public payload: {
       name: string;
       address: string;
-      photo: string;
       _id: string;
       parentNumber: number;
       std: number;
       dob: Date;
       status: boolean;
+      file: File;
     }
   ) {}
 }

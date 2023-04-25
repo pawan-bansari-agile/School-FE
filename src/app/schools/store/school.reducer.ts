@@ -4,7 +4,6 @@ import * as SchoolActions from "./school.actions";
 export interface State {
   schools: School[];
   school: School;
-  updatedSchool: UpdatedSchool;
   searchedSchool: School;
   schoolError: string;
 }
@@ -12,7 +11,6 @@ export interface State {
 const initialState: State = {
   schools: [],
   school: null,
-  updatedSchool: null,
   searchedSchool: null,
   schoolError: null,
 };
@@ -37,13 +35,8 @@ export function schoolReducer(
         schools: [...action.payload],
       };
     case SchoolActions.UPDATE_SCHOOL:
-      const updatedSchool = {
-        ...action.payload,
-      };
-
       return {
         ...state,
-        updatedSchool: updatedSchool,
       };
     case SchoolActions.DELETE_SCHOOL:
       return {

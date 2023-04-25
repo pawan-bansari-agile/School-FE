@@ -1,3 +1,4 @@
+      <img src="{{ selectedStudent.photo }}" class="img-responsive" alt="Student Photo">
       <h3>Name: {{ selectedStudent.name }}</h3>
       <p>Address: {{ selectedStudent.address }}</p>
       <h4>Parent Number:{{ selectedStudent.parentNumber }}</h4>
@@ -53,6 +54,23 @@
               #address="ngModel"
             >
             <span class="help-block" *ngIf="address.invalid && (address.dirty || address.touched)">Address is required!</span>
+          </div>
+          <div>
+            <label for="file">Photo</label>
+            <input
+              type="file"
+              class="form-control"
+              ngModel
+              name="file"
+              #photo="ngModel"
+              accept=".jpg, .jpeg, .png"
+              (change)="getFile($event)"
+            />
+            <span class="help-block" *ngIf="photo.touched && !photo.value">Photo empty!</span>
+            <img [src]="imageUrl" *ngIf="imageUrl && photo.value" class="img-responsive">
+            <div *ngIf="!photo.value">
+              <small class="form-text text-danger">Only one image can be uploaded!</small>
+            </div>
           </div>
           <div class="form-group">
             <label for="std">Standard</label>

@@ -63,6 +63,9 @@ export class StudentsComponent implements OnInit {
   @ViewChild(PlaceholderDirective, { static: false })
   alertHost: PlaceholderDirective;
 
+  file: File;
+  imageUrl: string;
+
   ngOnInit() {
     this.userSub = this.store.select("auth").subscribe((authState) => {
       this.userRole = authState.school ? authState.school.role : "";
@@ -101,6 +104,17 @@ export class StudentsComponent implements OnInit {
       this.closeSub.unsubscribe();
       this.error = null;
     });
+  }
+
+  getFile(event) {
+    if (event.target.files.length > 0) {
+      this.file = event.target.files[0];
+      const reader = new FileReader();
+      reader.readAsDataURL(this.file);
+      reader.onload = () => {
+        this.imageUrl = reader.result as string;
+      };
+    }
   }
 
   fetchStudents(form: NgForm) {
@@ -163,15 +177,17 @@ export class StudentsComponent implements OnInit {
   }
 
   onSubmit(form: NgForm) {
+    let filterForm: NgForm;
     const payload = {
       name: form.value.name,
       parentNumber: form.value.parentNumber.toString(),
       address: form.value.address,
       std: form.value.std,
       dob: form.value.dob,
+      file: this.file,
     };
     this.store.dispatch(new StudentActions.AddStudent(payload));
-    this.fetchStudents(form);
+    this.fetchStudents(filterForm);
     this.createStud = false;
   }
 

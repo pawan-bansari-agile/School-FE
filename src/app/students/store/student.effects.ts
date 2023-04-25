@@ -15,7 +15,7 @@ import { of } from "rxjs";
 
 export interface searchResponse {
   data: {
-    existingStud: Student[];
+    studentUrl: Student[];
   };
   message: string;
   error: HttpErrorResponse;
@@ -54,13 +54,17 @@ export class StudentEffects {
   addStudent = this.actions$.pipe(
     ofType(StudentActions.ADD_STUDENT),
     switchMap((addAction: StudentActions.AddStudent) => {
-      return this.http.post<Student>("http://localhost:3000/students/create", {
-        name: addAction.payload.name,
-        parentNumber: addAction.payload.parentNumber,
-        address: addAction.payload.address,
-        std: addAction.payload.std,
-        dob: addAction.payload.dob,
-      });
+      const fd = new FormData();
+      fd.append("name", addAction.payload.name);
+      fd.append("parentNumber", addAction.payload.parentNumber.toString());
+      fd.append("address", addAction.payload.address);
+      fd.append("std", addAction.payload.std.toString());
+      fd.append("dob", addAction.payload.dob.toString());
+      fd.append("file", addAction.payload.file, addAction.payload.file.name);
+      return this.http.post<Student>(
+        "http://localhost:3000/students/create",
+        fd
+      );
     })
   );
 
@@ -126,17 +130,20 @@ export class StudentEffects {
   updateStudent = this.actions$.pipe(
     ofType(StudentActions.UPDATE_STUDENT),
     switchMap((updateAction: StudentActions.UpdateStudent) => {
+      const fd = new FormData();
+      fd.append("name", updateAction.payload.name);
+      fd.append("parentNumber", updateAction.payload.parentNumber.toString());
+      fd.append("address", updateAction.payload.address);
+      fd.append("std", updateAction.payload.std.toString());
+      fd.append("dob", updateAction.payload.dob.toString());
+      fd.append(
+        "file",
+        updateAction.payload.file,
+        updateAction.payload.file.name
+      );
       return this.http.patch<UpdatedStudent>(
         `http://localhost:3000/students/update/${updateAction.payload._id}`,
-        {
-          name: updateAction.payload.name,
-          parentNumber: updateAction.payload.parentNumber,
-          address: updateAction.payload.address,
-          std: updateAction.payload.std,
-          photo: updateAction.payload.photo,
-          dob: updateAction.payload.dob,
-          status: updateAction.payload.status,
-        }
+        fd
       );
     })
   );
@@ -164,7 +171,7 @@ export class StudentEffects {
       if (school.error) {
         return handleError(school);
       } else {
-        return new StudentActions.SearchComplete(school.data.existingStud[0]);
+        return new StudentActions.SearchComplete(school.data.studentUrl[0]);
       }
     })
   );

@@ -1,11 +1,10 @@
 import { UpdatedSchool } from "src/app/auth/school.model";
-import { Student } from "../student.model";
+import { Student, UpdatedStudent } from "../student.model";
 import * as StudentActions from "./student.actions";
 
 export interface State {
   students: Student[];
   student: Student;
-  updatedSchool: UpdatedSchool;
   searchedStudent: Student;
   newStudent: Student;
   studentError: string;
@@ -14,7 +13,6 @@ export interface State {
 const initialState: State = {
   students: [],
   student: null,
-  updatedSchool: null,
   searchedStudent: null,
   newStudent: null,
   studentError: null,
@@ -49,12 +47,8 @@ export function studentReducer(
         newSchool: action.payload,
       };
     case StudentActions.UPDATE_STUDENT:
-      const updatedStudent = {
-        ...action.payload,
-      };
       return {
         ...state,
-        updatedStudent: updatedStudent,
       };
     case StudentActions.STATUS_UPDATE:
       return {

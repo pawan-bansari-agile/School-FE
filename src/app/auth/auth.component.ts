@@ -71,16 +71,6 @@ export class AuthComponent implements OnInit, OnDestroy {
     const password = form.value.password;
     const role = form.value.role;
 
-    // const formData = new FormData();
-    // formData.append("name", form.value.name);
-    // formData.append("address", form.value.address);
-    // formData.append("file", this.file);
-    // formData.append("zipCode", form.value.zipCode);
-    // formData.append("city", form.value.city);
-    // formData.append("state", form.value.state);
-    // formData.append("country", form.value.country);
-    // formData.append("email", form.value.email);
-
     switch (this.isLoginMode) {
       case "Login as User":
         this.store.dispatch(
@@ -125,7 +115,6 @@ export class AuthComponent implements OnInit, OnDestroy {
   getFile(event) {
     if (event.target.files.length > 0) {
       this.file = event.target.files[0];
-      console.log("from get file method", this.file);
       const reader = new FileReader();
       reader.readAsDataURL(this.file);
       reader.onload = () => {

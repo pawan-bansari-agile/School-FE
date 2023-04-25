@@ -20,6 +20,7 @@
     </form>
     <div *ngIf="!!searchedStudent" class="card">
       <div class="card-body">
+        <img src="{{ searchedStudent.photo }}" class="img-responsive" alt="Student Photo">
         <h4 class="card-title">Name: {{ searchedStudent.name }}</h4>
         <h6 class="card-subtitle mb-2 text-muted">Parent Number: {{ searchedStudent.parentNumber }}</h6>
         <p class="card-text">Address: {{ searchedStudent.address }}</p>
@@ -64,6 +65,23 @@
             #name="ngModel"
           >
           <span class="help-block" *ngIf="name.invalid && (name.dirty || name.touched)">Name is required!</span>
+        </div>
+        <div class="form-group">
+          <label for="file">Photo</label>
+          <input
+            type="file"
+            class="form-control"
+            ngModel
+            name="file"
+            #photo="ngModel"
+            accept=".jpg, .jpeg, .png"
+            (change)="getFile($event)"
+          />
+          <span class="help-block" *ngIf="photo.touched && !photo.value">You can add the photo later!</span>
+          <img [src]="imageUrl" *ngIf="imageUrl && photo.value" class="img-responsive">
+          <div *ngIf="!photo.value">
+            <small class="form-text text-danger">Only one image can be uploaded!</small>
+          </div>
         </div>
         <div class="form-group">
           <label for="parentNumber">Parents Number</label>

@@ -127,16 +127,6 @@ export class SchoolEffects {
       fd.append("country", updateAction.payload.country);
       return this.http.patch<UpdatedSchool>(
         "http://localhost:3000/school/update",
-        // {
-        //   name: updateAction.payload.name,
-        //   email: updateAction.payload.email,
-        //   address: updateAction.payload.address,
-        //   photo: updateAction.payload.photo,
-        //   zipCode: updateAction.payload.zipCode,
-        //   city: updateAction.payload.city,
-        //   state: updateAction.payload.state,
-        //   country: updateAction.payload.country,
-        // }
         fd
       );
     })

@@ -19,6 +19,9 @@ export class StudentItemComponent implements OnInit {
   student: Student | null = null;
   @Input() selectedStudent: Student | null = null;
 
+  file: File;
+  imageUrl: string;
+
   constructor(private store: Store<fromApp.AppState>) {}
 
   ngOnInit() {
@@ -38,7 +41,6 @@ export class StudentItemComponent implements OnInit {
     const parentNumber = form.value.parentNumber;
     const address = form.value.address;
     const std = form.value.std;
-    const photo = form.value.photo;
     const dob = form.value.dob;
     const status = form.value.status;
     const _id = this.selectedStudent._id;
@@ -46,7 +48,7 @@ export class StudentItemComponent implements OnInit {
     const payload = {
       name: name,
       address: address,
-      photo: photo,
+      file: this.file,
       parentNumber: parentNumber,
       std: std,
       dob: dob,
@@ -56,6 +58,17 @@ export class StudentItemComponent implements OnInit {
 
     this.store.dispatch(new StudentActions.UpdateStudent(payload));
     location.reload();
+  }
+
+  getFile(event) {
+    if (event.target.files.length > 0) {
+      this.file = event.target.files[0];
+      const reader = new FileReader();
+      reader.readAsDataURL(this.file);
+      reader.onload = () => {
+        this.imageUrl = reader.result as string;
+      };
+    }
   }
 
   onDelete(student) {
